@@ -1,0 +1,212 @@
+---
+title: Build OmniPathR databases
+vignette: >
+  %\VignetteIndexEntry{Build OmniPathR databases}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+author: "`r 'Author: Matthew Hung'`"
+date: "`r paste('Last Updated:', format(Sys.Date(), '%Y/%m/%d'))`"
+output:
+  html_document:
+    code_folding: hide
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+```{r}
+#| vscode: {languageId: r}
+options(timeout = 600)
+library(strpip)
+```
+
+## Retrieve biomRt database
+
+```{r}
+#| vscode: {languageId: r}
+# Import biomart database - this returns the biomart_dict directly now
+biomart_dict <- import_biomart_local()
+```
+
+```{r}
+#| vscode: {languageId: r}
+# biomart_dict is a data frame that contains the biomart mouse and human gene symbols, and their corresponding chromosome
+head(biomart_dict)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# save biomart_dict to TSV file - only run this if you need to update the data
+# write.table(biomart_dict, "inst/extdata/release-105.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+```
+
+## Build OmniPathR databases for gene annotation
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# Only run the following code if you need to update the OmniPath databases
+# Make sure OmniPathR is installed with: BiocManager::install("OmnipathR")
+if (!requireNamespace("OmnipathR", quietly = TRUE)) {
+  stop("This vignette requires the OmnipathR package. Please install it with BiocManager::install('OmnipathR')")
+}
+
+# import OmniPathR databases for human gene annotation
+human.omnipath.db <- OmnipathR::import_omnipath_intercell()
+human.omnipath.db %>% head()
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# add human_gene_symbol and database_cs columns
+human.omnipath.db <- human.omnipath.db %>%
+    mutate(
+        human_gene_symbol =  genesymbol,
+        database_cs = ifelse(str_detect(database, "UniProt"), "UniProt", database)) %>%
+    merge(biomart_dict, ., by = "human_gene_symbol", all = F) %>%
+    dplyr::select(-c("genesymbol"))
+
+# select columns of interest for gene annotation
+# annotate genes that are transmembrane proteinsm, cell surface, adhesion-related
+human.omnipath.db <- human.omnipath.db %>%
+    dplyr::select(human_gene_symbol, human_chromosome, entity_type, category, parent, consensus_score, database_cs) %>%
+    arrange(human_gene_symbol) %>%
+    group_by(human_gene_symbol) %>%
+    summarize(
+        human_chromosome = unique(human_chromosome),
+        entity_type = unique(entity_type),
+        category = paste0(unique(category), collapse = ", "),
+        parent = paste0(unique(parent), collapse = ", "),
+        consensus_score = max(consensus_score, na.rm = TRUE),
+        is_cs = ifelse(str_detect(parent, "transmembrane|cell_surface|adhesion|junction"), TRUE, FALSE),
+        database_cs = paste0(unique(database_cs), collapse = ", "),
+        ) %>%
+    ungroup()
+
+# visualize output
+head(human.omnipath.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# import OmniPathR databases for human transcriptional interactions
+human.regulon.db <- OmnipathR::import_transcriptional_interactions(organism = 9606)
+head(human.regulon.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# select columns of interest for gene annotation
+# annotate genes that are transcription factors
+human.regulon.db <- human.regulon.db %>%
+    group_by(source_genesymbol) %>%
+    separate_rows(source_genesymbol, sep = "_") %>%
+    separate_rows(sources, sep = ";") %>%
+    mutate(human_gene_symbol = source_genesymbol) %>%
+    group_by(human_gene_symbol) %>%
+    summarize(database_tf = paste0(unique(sources), collapse = ";"))
+
+head(human.regulon.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# merge cell surface and transcription factor annotations
+human.omnipath.db <- human.omnipath.db %>%
+    mutate(is_tf = ifelse(human_gene_symbol %in% human.regulon.db$human_gene_symbol, TRUE, FALSE)) %>%
+    merge(., human.regulon.db, by = "human_gene_symbol", all.x = TRUE)
+
+head(human.omnipath.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# save OmniPathR databases for human gene annotation in TSV file
+# write.table(human.omnipath.db, "inst/extdata/release-105_human_omnipath_db.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+```
+
+## Build mouse omnipath database
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# import OmniPathR databases for mouse gene annotation
+mouse.omnipath.db <- OmnipathR::import_omnipath_intercell(organism = 10090)
+head(mouse.omnipath.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# add mouse_gene_symbol and database_cs columns
+mouse.omnipath.db <- mouse.omnipath.db %>%
+    mutate(
+        human_gene_symbol =  genesymbol,
+        database_cs = ifelse(str_detect(database, "UniProt"), "UniProt", database)) %>%
+    merge(biomart_dict, ., by = "human_gene_symbol", all = F) %>%
+    dplyr::select(-c("genesymbol"))
+
+# select columns of interest for gene annotation
+# annotate genes that are transmembrane proteinsm, cell surface, adhesion-related
+mouse.omnipath.db <- mouse.omnipath.db %>%
+    dplyr::select(mouse_gene_symbol, mouse_chromosome, entity_type, category, parent, consensus_score, database_cs) %>%
+    arrange(mouse_gene_symbol) %>%
+    group_by(mouse_gene_symbol) %>%
+    summarize(
+        mouse_gene_symbol = unique(mouse_gene_symbol),
+        mouse_chromosome = unique(mouse_chromosome),
+        entity_type = unique(entity_type),
+        category = paste0(unique(category), collapse = ", "),
+        parent = paste0(unique(parent), collapse = ", "),
+        consensus_score = max(consensus_score, na.rm = TRUE),
+        is_cs = ifelse(str_detect(parent, "transmembrane|cell_surface|adhesion|junction"), TRUE, FALSE),
+        database_cs = paste0(unique(database_cs), collapse = ", "),
+        ) %>%
+    ungroup() %>%
+    filter(mouse_gene_symbol != "")
+
+head(mouse.omnipath.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# import OmniPathR databases for mouse transcriptional interactions
+mouse.regulon.db <- OmnipathR::import_transcriptional_interactions(organism = 10090)
+head(mouse.regulon.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# select columns of interest for gene annotation
+# annotate genes that are transcription factors
+mouse.regulon.db <- mouse.regulon.db %>%
+    group_by(source_genesymbol) %>%
+    separate_rows(source_genesymbol, sep = "_") %>%
+    separate_rows(sources, sep = ";") %>%
+    mutate(mouse_gene_symbol = source_genesymbol) %>%
+    group_by(mouse_gene_symbol) %>%
+    summarize(database_tf = paste0(unique(sources), collapse = ";"))
+
+head(mouse.regulon.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# merge cell surface and transcription factor annotations
+mouse.omnipath.db <- mouse.omnipath.db %>%
+    merge(., mouse.regulon.db, by = "mouse_gene_symbol", all.x = TRUE)
+head(mouse.omnipath.db)
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
+# save OmniPathR databases for mouse gene annotation in TSV file
+# write.table(mouse.omnipath.db, "inst/extdata/release-105_mouse_omnipath_db.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+```
+
+## Session information
+
+```{r}
+#| vscode: {languageId: r}
+sessionInfo()
+```
+
+

@@ -1,0 +1,10 @@
+data
+tests/run
+omnipathr-log
+docs
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto

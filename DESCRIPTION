@@ -1,0 +1,32 @@
+Package: strpip
+Title: Data Structure Pipelines for Genomic Analysis
+Version: 0.1.0
+Authors@R: 
+    person("Hung", "M", , "hungm@example.com", role = c("aut", "cre"))
+Description: A comprehensive R package for genomic data structure pipelines, providing tools for data format conversions, gene symbol mapping, gene set operations, expression data processing, and functional annotation integration.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+URL: https://hungms.github.io/deseq2pip/, https://hungms.github.io/strpip/
+BugReports: https://github.com/hungms/strpip/issues
+biocViews: Software
+VignetteBuilder: knitr
+Imports: 
+    dplyr,
+    tidyr,
+    tibble,
+    stringr,
+    utils,
+    rlang,
+    magrittr
+Suggests:
+    OmnipathR, 
+    biomaRt,
+    igraph,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Config/Needs/bioc: OmnipathR, biomaRt
+Config/testthat/edition: 3
+BuildVignettes: no

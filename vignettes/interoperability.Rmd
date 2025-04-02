@@ -1,0 +1,86 @@
+---
+title: Interoperability with file formats
+vignette: >
+  %\VignetteIndexEntry{Interoperability with file formats}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+author: "`r 'Author: Matthew Hung'`"
+date: "`r paste('Last Updated:', format(Sys.Date(), '%Y/%m/%d'))`"
+output:
+  html_document:
+    code_folding: hide
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+```{r}
+#| vscode: {languageId: r}
+options(timeout = 600)
+library(strpip)
+```
+
+
+```{r}
+#| vscode: {languageId: r}
+# load example expression matrix
+data_file <- system.file("extdata", "GSE224465.tsv", package = "strpip")
+if (file.exists(data_file)) {
+  counts <- read.table(data_file, sep = "\t", header = TRUE, row.names = 1)
+} else {
+  # Create example data if file doesn't exist
+  set.seed(123)
+  counts <- matrix(rnorm(100), nrow = 20, ncol = 5)
+  rownames(counts) <- paste0("gene", 1:20)
+  colnames(counts) <- paste0("sample", 1:5)
+  counts <- as.data.frame(counts)
+}
+counts[1:5, 1:5]
+dim(counts)
+```
+
+## GCT files
+
+```{r}
+#| vscode: {languageId: r}
+# Save expression matrix as GCT file
+temp_gct <- tempfile(fileext = ".gct")
+write_gct(counts, save_name = basename(temp_gct), save_dir = dirname(temp_gct))
+```
+
+```{r}
+#| vscode: {languageId: r}
+# Load expression matrix from GCT file
+counts <- read_gct(temp_gct)
+counts[1:5, 1:5]
+dim(counts)
+```
+## GMT files
+
+```{r}
+#| vscode: {languageId: r}
+# Create a list of gene lists
+xy.genes <- get_xy_genes(org = "mouse")
+mt.genes <- get_mt_genes(org = "mouse")
+vdj.genes <- get_str_genes(org = "mouse", str = c("tcr", "bcr"))
+gene.list <- list(XY = xy.genes, MT = mt.genes, VDJ = vdj.genes)
+
+# Convert list to data frame
+gene.df <- convert_list_to_df(gene.list)
+head(gene.df)
+```
+
+```{r}
+#| vscode: {languageId: r}
+# Save gene list as GMT file
+temp_gmt <- tempfile(fileext = ".gmt")
+write_gmt(gene.df, save_name = basename(temp_gmt), save_dir = dirname(temp_gmt))
+```
+
+```{r}
+#| vscode: {languageId: r}
+# Load gene list from GMT file  
+gmt <- read_gmt(temp_gmt)
+head(gmt)
+```

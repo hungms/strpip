@@ -86,14 +86,11 @@ import_biomart_local <- function(release = "105") {
 
 #' Convert mouse gene symbols to human gene symbols
 #' 
-#' Converts a list of mouse (MGI) gene symbols to their human (HGNC) equivalents.
-#' By default, returns only one-to-one mappings to ensure accuracy.
+#' Converts a vector of mouse (MGI) gene symbols to their human (HGNC) equivalents.
+#' By default, returns a data frame with all possible mappings.
 #'
 #' @param genes A vector of mouse gene symbols to convert
-#' @param one.to.many Logical. If TRUE, returns all possible human gene mappings,
-#'   including cases where one mouse gene maps to multiple human genes.
-#' @return If `one.to.many = FALSE`, returns a vector of unique human gene symbols.
-#'   If `one.to.many = TRUE`, returns a data frame with all possible mappings.
+#' @return A data frame with all possible mappings.
 #' @examples
 #' \dontrun{
 #' mouse_genes <- c("Trp53", "Cd4", "Cd8a")
@@ -101,28 +98,18 @@ import_biomart_local <- function(release = "105") {
 #' print(human_genes)
 #' }
 #' @export
-convert_mouse_to_human <- function(genes, one.to.many = FALSE) {
-   # Validate input
-   if (!is.character(genes)) {
-     stop("Gene list must be a character vector", call. = FALSE)
-   }
-   
+convert_mouse_to_human <- function(genes) {
+
    # Get the biomart dictionary
    biomart_dict <- get_biomart_dict()
    
    # Filter to relevant genes and create mapping
    biomart_dict_tmp <- biomart_dict %>% 
       dplyr::filter(mouse_gene_symbol %in% genes) %>%
-      dplyr::select(c(human_gene_symbol, mouse_gene_symbol)) %>% 
-      dplyr::distinct(human_gene_symbol, .keep_all = TRUE)
+      dplyr::select(c(mouse_gene_symbol, human_gene_symbol))
       
    # Return appropriate format based on parameters
-   if (one.to.many) {
-      return(biomart_dict_tmp)
-   } else {
-      human.genes <- biomart_dict_tmp$human_gene_symbol %>% unique()
-      return(human.genes)
-   }
+   return(biomart_dict_tmp)
 }
 
 #' Convert human gene symbols to mouse gene symbols
@@ -131,8 +118,7 @@ convert_mouse_to_human <- function(genes, one.to.many = FALSE) {
 #' By default, returns only one-to-one mappings to ensure accuracy.
 #'
 #' @param genes A vector of human gene symbols to convert
-#' @param one.to.many Logical. If TRUE, returns all possible mouse gene mappings,
-#'   including cases where one human gene maps to multiple mouse genes.
+#' @param one.to.many Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.
 #' @return If `one.to.many = FALSE`, returns a vector of unique mouse gene symbols.
 #'   If `one.to.many = TRUE`, returns a data frame with all possible mappings.
 #' @examples
@@ -142,11 +128,7 @@ convert_mouse_to_human <- function(genes, one.to.many = FALSE) {
 #' print(mouse_genes)
 #' }
 #' @export
-convert_human_to_mouse <- function(genes, one.to.many = FALSE) {
-   # Validate input
-   if (!is.character(genes)) {
-     stop("Gene list must be a character vector", call. = FALSE)
-   }
+convert_human_to_mouse <- function(genes){
    
    # Get the biomart dictionary
    biomart_dict <- get_biomart_dict()
@@ -154,15 +136,77 @@ convert_human_to_mouse <- function(genes, one.to.many = FALSE) {
    # Filter to relevant genes and create mapping
    biomart_dict_tmp <- biomart_dict %>% 
       dplyr::filter(human_gene_symbol %in% genes) %>%
-      dplyr::select(c(human_gene_symbol, mouse_gene_symbol)) %>% 
-      dplyr::distinct(mouse_gene_symbol, .keep_all = TRUE)
-      
-   # Return appropriate format based on parameters
-   if (one.to.many) {
-      return(biomart_dict_tmp)
-   } else {
-      mouse.genes <- biomart_dict_tmp$mouse_gene_symbol %>% unique()
-      return(mouse.genes)
+      dplyr::select(c(human_gene_symbol, mouse_gene_symbol))
+
+   return(biomart_dict_tmp)}
+
+
+
+#' Convert orthologs between human and mouse for a vector of genes
+#'
+#' Converts a vector of gene symbols between human and mouse species.
+#'
+#' @param genes A vector of gene symbols to convert
+#' @param mode The direction of conversion, either "human_to_mouse" or "mouse_to_human"
+#' @param one.to.many Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.
+convert_orthologs_vector <- function(genes, mode = "human_to_mouse", one.to.many = TRUE){
+   stopifnot(mode %in% c("human_to_mouse", "mouse_to_human"))
+   stopifnot(is.vector(genes))
+   stopifnot(is.logical(one.to.many))
+
+   eval(parse(text = paste0("orthologs_df <- convert_", mode, "(", genes, ")")))
+
+   if(one.to.many){
+      mapped_genes <- orthologs_df %>% .[[2]] %>% unique(.)
    }
+   else{
+      mapped_genes <- orthologs_df %>% distinct(.[[1]], .keep_all = TRUE) %>% .[[2]] %>% unique(.)
+   }
+   return(mapped_genes)
+}
+
+#' Convert orthologs between human and mouse for an gene expression matrix
+#'
+#' Converts a matrix of gene symbols between human and mouse species.
+#'
+#' @param matrix A matrix of gene symbols to convert
+#' @param mode The direction of conversion, either "human_to_mouse" or "mouse_to_human"
+#' @param many.to.one Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.
+convert_orthologs_matrix <- function(matrix, mode = "human_to_mouse", many.to.one = TRUE){
+
+   stopifnot(mode %in% c("human_to_mouse", "mouse_to_human"))
+   stopifnot(is.matrix(matrix))
+   stopifnot(is.logical(many.to.one))
+   stopifnot(str_detect(rownames(matrix), "[A-Z]"))
+
+   eval(parse(text = paste0("orthologs_df <- convert_", mode, "(", rownames(matrix), ")")))
+   orig.species <- colnames(orthologs_df)[[1]]
+   mapped.species <- colnames(orthologs_df)[[2]]
+
+   if(many.to.one){
+      mapped_matrix <- matrix %>%
+         as.data.frame() %>%
+         rownames_to_column("gene") %>%
+         pivot_longer(!gene, names_to = "sample", values_to = "exprs") %>%
+         merge(., orthologs_df, by.x = "gene", by.y = orig.species, all.x = TRUE) %>%
+         pivot_wider(names_from = sample, values_from = exprs) %>%
+         column_to_rownames("gene") %>%
+         as.matrix()}
+   else{
+      orthologs_df <- orthologs_df %>% 
+         group_by(human_gene_symbol) %>%
+         mutate(hn = n()) %>%
+         group_by(mouse_gene_symbol) %>%
+         mutate(mn = n()) %>%
+         filter(hn == 1 & mn == 1)
+      orthologs_df <- orthologs_df[c(1,2)]
+      mapped_matrix <- matrix[which(rownames(matrix) %in% orig.species),]
+      mapped_matrix <- mapped_matrix %>%
+         as.data.frame() %>%
+         merge(., orthologs_df, by.x = 0, by.y = orig.species, all.x = TRUE) %>%
+         dplyr::select(-c(orig.species)) %>%
+         column_to_rownames(mapped.species) %>%
+         as.matrix()}
+   return(mapped_genes)
 }
 

@@ -4,13 +4,12 @@
 \alias{convert_human_to_mouse}
 \title{Convert human gene symbols to mouse gene symbols}
 \usage{
-convert_human_to_mouse(genes, one.to.many = FALSE)
+convert_human_to_mouse(genes)
 }
 \arguments{
 \item{genes}{A vector of human gene symbols to convert}
 
-\item{one.to.many}{Logical. If TRUE, returns all possible mouse gene mappings,
-including cases where one human gene maps to multiple mouse genes.}
+\item{one.to.many}{Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.}
 }
 \value{
 If \code{one.to.many = FALSE}, returns a vector of unique mouse gene symbols.

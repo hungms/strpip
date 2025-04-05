@@ -1,7 +1,6 @@
-# strpip
+# strpip: Data Structure Pipelines for Genomic Analysis
 [![R-CMD-check](https://github.com/hungms/strpip/workflows/R-CMD-check/badge.svg)](https://github.com/hungms/strpip/actions)
 [![pkgdown](https://github.com/hungms/strpip/workflows/pkgdown/badge.svg)](https://github.com/hungms/strpip/actions)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
 A comprehensive R package for genomic data structure pipelines, providing tools for data format conversions, gene symbol mapping, gene set operations, expression data processing, and functional annotation integration.
 

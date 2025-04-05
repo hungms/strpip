@@ -312,3 +312,15 @@ summarize_genes <- function(df, gene_sym_vec, normalized = FALSE) {
         stop("Error summarizing gene expression: ", e$message, call. = FALSE)
     })
 }
+
+#' Pipe operator
+#'
+#' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL 

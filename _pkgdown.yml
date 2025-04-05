@@ -1,4 +1,50 @@
 url: https://hungms.github.io/strpip/
+authors:
+  Matthew Hung:
+    href: https://hungms.github.io/Portfolio/
 template:
   bootstrap: 5
+  bootswatch: flatly
+navbar:
+  structure:
+    left:
+    - intro
+    - articles
+    - reference
+    - news
+    right:
+    - search
+    - github
+    - lightswitch
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - interoperability
+  - database
+  - session_info
+reference:
+- title: Annotate Functions
+  contents:
+  - starts_with("run_annotation")
+- title: Gene Conversion
+  contents:
+  - starts_with("convert_human")
+  - starts_with("convert_mouse")
+  - starts_with("convert_orthologs")
+- title: BiomaRt Functions
+  contents:
+  - starts_with("import_")
+  - starts_with("validate_")
+- title: Find Genes
+  contents:
+  - starts_with("get_")
+  - matches("string")
+- title: Format Functions
+  contents:
+  - starts_with("summarize_")
+  - starts_with("convert_list_to_df")
+  - starts_with("read_")
+  - starts_with("write_")
+  - starts_with("save_")
 

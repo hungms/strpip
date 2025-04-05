@@ -4,7 +4,7 @@
 \alias{get_str_genes}
 \title{Get genes matching specific patterns}
 \usage{
-get_str_genes(org = "human", str = c("rb"))
+get_str_genes(org = "human", str = c("rb"), ...)
 }
 \arguments{
 \item{org}{Organism to query. Either "human" or "mouse". Default is "human".}

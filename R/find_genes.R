@@ -3,6 +3,7 @@
 #' Retrieves all gene symbols located on the X and Y chromosomes for a specified organism.
 #'
 #' @param org Organism to query. Either "human" or "mouse". Default is "human".
+#' @param ... Additional arguments passed to `import_biomart_human` or `import_biomart_mouse`.
 #' @return A character vector containing gene symbols from X and Y chromosomes.
 #' @examples
 #' \dontrun{
@@ -10,15 +11,18 @@
 #' head(xy_genes)
 #' }
 #' @export
-get_xy_genes <- function(org = "human") {
+get_xy_genes <- function(org = "human", ...) {
   # Validate organism parameter
   org <- validate_organism(org)
   
   # Get the biomart dictionary
-  biomart_dict <- get_biomart_dict()
+  if(org == "human"){
+    biomart_dict_human <- import_biomart_human(...)}
+  else{
+    biomart_dict_mouse <- import_biomart_mouse(...)}
   
   # Extract genes on X and Y chromosomes
-  xy_genes <- biomart_dict %>% 
+  xy_genes <- get(paste0("biomart_dict_", org)) %>% 
       dplyr::filter(!!rlang::sym(paste0(org, "_chromosome")) %in% c("X", "Y")) %>%
       dplyr::select(!!rlang::sym(paste0(org, "_gene_symbol"))) %>%
       .[[1]] %>%
@@ -37,6 +41,7 @@ get_xy_genes <- function(org = "human") {
 #' Retrieves all gene symbols located on the mitochondrial chromosome for a specified organism.
 #'
 #' @param org Organism to query. Either "human" or "mouse". Default is "human".
+#' @param ... Additional arguments passed to `import_biomart_human` or `import_biomart_mouse`.
 #' @return A character vector containing mitochondrial gene symbols.
 #' @examples
 #' \dontrun{
@@ -44,15 +49,18 @@ get_xy_genes <- function(org = "human") {
 #' head(mt_genes)
 #' }
 #' @export
-get_mt_genes <- function(org = "human") {
+get_mt_genes <- function(org = "human", ...) {
   # Validate organism parameter
   org <- validate_organism(org)
   
   # Get the biomart dictionary
-  biomart_dict <- get_biomart_dict()
+  if(org == "human"){
+    biomart_dict_human <- import_biomart_human(...)}
+  else{
+    biomart_dict_mouse <- import_biomart_mouse(...)}
   
   # Extract mitochondrial genes
-  mt_genes <- biomart_dict %>% 
+  mt_genes <- get(paste0("biomart_dict_", org)) %>% 
       dplyr::filter(!!rlang::sym(paste0(org, "_chromosome")) %in% c("MT")) %>%
       dplyr::select(!!rlang::sym(paste0(org, "_gene_symbol"))) %>%
       .[[1]] %>%
@@ -81,7 +89,7 @@ get_mt_genes <- function(org = "human") {
 #' head(rb_genes)
 #' }
 #' @export
-get_str_genes <- function(org = "human", str = c("rb")) {
+get_str_genes <- function(org = "human", str = c("rb"), ...) {
   # Validate organism parameter
   org <- validate_organism(org)
   
@@ -102,10 +110,13 @@ get_str_genes <- function(org = "human", str = c("rb")) {
     collapse = "|")
   
   # Get the biomart dictionary
-  biomart_dict <- get_biomart_dict()
+  if(org == "human"){
+    biomart_dict_human <- import_biomart_human(...)}
+  else{
+    biomart_dict_mouse <- import_biomart_mouse(...)}
   
   # Extract genes matching the pattern
-  genes <- biomart_dict %>% 
+  genes <- get(paste0("biomart_dict_", org)) %>% 
       dplyr::filter(stringr::str_detect(
         !!rlang::sym(paste0(org, "_gene_symbol")), 
         pattern_strings)) %>%

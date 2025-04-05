@@ -1,0 +1,117 @@
+####################### R Package #######################
+## build R package and workflow
+devtools::document()
+roxygen2::roxygenise()
+devtools::install()
+pkgdown::build_site()
+usethis::use_github_action()
+
+## optional
+# devtools::check()
+# devtools::build()
+# usethis::use_git()
+# usethis::use_pkgdown_github_pages()
+# usethis::use_bioc_github_action()
+
+####################### GitHub #######################
+# configure github repository
+
+# git config core.ignorecase false
+
+## Update <develop>
+# git checkout develop (git checkout -b develop)
+# git commit -m "update"
+# git push origin develop
+
+## Merge <develop> with <check/pre-release>
+# git checkout check/pre-release
+# git reset --hard develop
+# git push -f origin check/pre-release
+# git rebase -i HEAD~n
+# git push -f origin check/pre-release
+
+## Merge <check/pre-release> with <main>
+# git checkout main
+# git reset --hard check/pre-release
+# git push -f origin main
+
+## Tag the release in <main>
+# git tag -a v1.0.0 -m "Initial release with login functionality"
+# git push origin v1.0.0
+
+
+####################### R-CMD-check Workflows #######################
+## 1. rename R-CMD-check.yaml to just R-CMD-check
+
+## 2. prevent workflow pause on warnings
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+- uses: r-lib/actions/check-r-package@v2
+       with:
+         build_args: 'c("--no-manual", "--no-build-vignettes")'
+         error-on: '"error"
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+####################### PKGDOWN Workflows #######################
+## 1. rename pkgdown.yaml to just pkgdown
+
+## 2. run pkgdown workflow only after R-CMD-check is successful
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  workflow_run:
+    workflows: ["R-CMD-check"]
+    branches: [main, master]
+    types:
+      - completed
+  release:
+    types: [published]
+  workflow_dispatch:
+
+name: pkgdown
+
+permissions: read-all
+
+jobs:
+  pkgdown:
+    runs-on: ubuntu-latest
+    # Only run if the R-CMD-check workflow was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
+    # Only restrict concurrency for non-PR jobs
+    concurrency:
+      group: pkgdown-${{ github.run_id }}
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need to fetch entire history for proper versioning
+          fetch-depth: 0
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::pkgdown, local::.
+          needs: website
+
+      - name: Build site
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
+        shell: Rscript {0}
+
+      - name: Deploy to GitHub pages 🚀
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

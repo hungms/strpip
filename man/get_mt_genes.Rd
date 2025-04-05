@@ -4,10 +4,12 @@
 \alias{get_mt_genes}
 \title{Get genes from mitochondrial chromosome}
 \usage{
-get_mt_genes(org = "human")
+get_mt_genes(org = "human", ...)
 }
 \arguments{
 \item{org}{Organism to query. Either "human" or "mouse". Default is "human".}
+
+\item{...}{Additional arguments passed to \code{import_biomart_human} or \code{import_biomart_mouse}.}
 }
 \value{
 A character vector containing mitochondrial gene symbols.

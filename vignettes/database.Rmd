@@ -19,61 +19,78 @@ knitr:
 #| vscode: {languageId: r}
 options(timeout = 600)
 library(strpip)
+library(OmnipathR)
 ```
 
 ## Retrieve biomRt database
 
+
 ```{r}
 #| vscode: {languageId: r}
 # Import biomart database - this returns the biomart_dict directly now
-biomart_dict <- import_biomart_local()
+biomart_dict_mouse <- import_biomart_mouse(local = T)
+biomart_dict_human <- import_biomart_human(local = T)
+head(biomart_dict_mouse)
+head(biomart_dict_human)
+
+# save biomart_dict to TSV file - only run this if you need to update the data
+#write.table(biomart_dict_mouse, "inst/extdata/release-105_biomart_dict_mouse.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+#write.table(biomart_dict_human, "inst/extdata/release-105_biomart_dict_human.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 ```
 
 ```{r}
 #| vscode: {languageId: r}
-# biomart_dict is a data frame that contains the biomart mouse and human gene symbols, and their corresponding chromosome
-head(biomart_dict)
-```
-
-```{r eval=FALSE}
-#| vscode: {languageId: r}
+# Import biomart database - this returns the biomart_dict directly now
+# biomart_dict <- import_biomart()
+biomart_dict_orthologs <- import_biomart_orthologs(local = T)
+head(biomart_dict_orthologs)
 # save biomart_dict to TSV file - only run this if you need to update the data
-# write.table(biomart_dict, "inst/extdata/release-105.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+# write.table(biomart_dict_orthologs, "inst/extdata/release-105_biomart_dict_orthologs.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 ```
 
 ## Build OmniPathR databases for gene annotation
 
 ```{r eval=FALSE}
 #| vscode: {languageId: r}
-# Only run the following code if you need to update the OmniPath databases
-# Make sure OmniPathR is installed with: BiocManager::install("OmnipathR")
-if (!requireNamespace("OmnipathR", quietly = TRUE)) {
-  stop("This vignette requires the OmnipathR package. Please install it with BiocManager::install('OmnipathR')")
-}
-
-# import OmniPathR databases for human gene annotation
-human.omnipath.db <- OmnipathR::import_omnipath_intercell()
-human.omnipath.db %>% head()
+# add human_gene_symbol and database_cs columns
+biomart_dict <- import_biomart_orthologs(local = T)
+biomart_dict <- biomart_dict %>% 
+    dplyr::filter(human_gene_symbol != "") %>%
+    group_by(human_gene_symbol, human_chromosome) %>%
+    summarize(
+        mouse_gene_symbol = paste0(mouse_gene_symbol, collapse = ", "), 
+        mouse_chromosome = paste0(mouse_chromosome, collapse = ", ")) %>%
+    mutate(
+        mouse_gene_symbol_unique = gsub(",.*", "", mouse_gene_symbol),
+        mouse_chromosome_unique = gsub(",.*", "", mouse_chromosome))
 ```
 
 ```{r eval=FALSE}
-#| vscode: {languageId: r}
-# add human_gene_symbol and database_cs columns
+# import OmniPathR databases for human gene annotation
+human.omnipath.db <- OmnipathR::import_omnipath_intercell()
+human.omnipath.db %>% head()
+
 human.omnipath.db <- human.omnipath.db %>%
     mutate(
         human_gene_symbol =  genesymbol,
         database_cs = ifelse(str_detect(database, "UniProt"), "UniProt", database)) %>%
-    merge(biomart_dict, ., by = "human_gene_symbol", all = F) %>%
+    merge(., biomart_dict, by = "human_gene_symbol", all.x = T) %>%
     dplyr::select(-c("genesymbol"))
+```
 
+```{r eval=FALSE}
 # select columns of interest for gene annotation
 # annotate genes that are transmembrane proteinsm, cell surface, adhesion-related
 human.omnipath.db <- human.omnipath.db %>%
-    dplyr::select(human_gene_symbol, human_chromosome, entity_type, category, parent, consensus_score, database_cs) %>%
+    dplyr::select(human_gene_symbol, human_chromosome, mouse_gene_symbol, mouse_chromosome, mouse_gene_symbol_unique, mouse_chromosome_unique, entity_type, category, parent, consensus_score, database_cs) %>%
     arrange(human_gene_symbol) %>%
     group_by(human_gene_symbol) %>%
     summarize(
         human_chromosome = unique(human_chromosome),
+        mouse_gene_symbol = unique(mouse_gene_symbol),
+        mouse_chromosome = unique(mouse_chromosome),
+        mouse_gene_symbol_unique = unique(mouse_gene_symbol_unique),
+        mouse_chromosome_unique = unique(mouse_chromosome_unique),
         entity_type = unique(entity_type),
         category = paste0(unique(category), collapse = ", "),
         parent = paste0(unique(parent), collapse = ", "),
@@ -129,40 +146,61 @@ head(human.omnipath.db)
 
 ```{r eval=FALSE}
 #| vscode: {languageId: r}
+# add human_gene_symbol and database_cs columns
+biomart_dict <- import_biomart_orthologs(local = T)
+biomart_dict <- biomart_dict %>% 
+    dplyr::filter(mouse_gene_symbol != "") %>% 
+    dplyr::filter(human_gene_symbol != "") %>%
+    group_by(human_gene_symbol, human_chromosome) %>%
+    summarize(
+        mouse_gene_symbol = paste0(mouse_gene_symbol, collapse = ", "), 
+        mouse_chromosome = paste0(mouse_chromosome, collapse = ", ")) %>%
+    mutate(
+        mouse_gene_symbol_unique = gsub(",.*", "", mouse_gene_symbol),
+        mouse_chromosome_unique = gsub(",.*", "", mouse_chromosome))
+```
+
+```{r eval=FALSE}
+#| vscode: {languageId: r}
 # import OmniPathR databases for mouse gene annotation
 mouse.omnipath.db <- OmnipathR::import_omnipath_intercell(organism = 10090)
+head(mouse.omnipath.db)
+
+mouse.omnipath.db <- mouse.omnipath.db %>%
+    mutate(
+        human_gene_symbol = genesymbol,
+        database_cs = ifelse(str_detect(database, "UniProt"), "UniProt", database)) %>%
+    merge(., biomart_dict, by = "human_gene_symbol", all.x = T) %>%
+    dplyr::select(-c("genesymbol")) %>%
+    separate_rows(mouse_gene_symbol, mouse_chromosome, sep = ", ") 
 head(mouse.omnipath.db)
 ```
 
 ```{r eval=FALSE}
 #| vscode: {languageId: r}
-# add mouse_gene_symbol and database_cs columns
-mouse.omnipath.db <- mouse.omnipath.db %>%
-    mutate(
-        human_gene_symbol =  genesymbol,
-        database_cs = ifelse(str_detect(database, "UniProt"), "UniProt", database)) %>%
-    merge(biomart_dict, ., by = "human_gene_symbol", all = F) %>%
-    dplyr::select(-c("genesymbol"))
-
 # select columns of interest for gene annotation
 # annotate genes that are transmembrane proteinsm, cell surface, adhesion-related
 mouse.omnipath.db <- mouse.omnipath.db %>%
-    dplyr::select(mouse_gene_symbol, mouse_chromosome, entity_type, category, parent, consensus_score, database_cs) %>%
-    arrange(mouse_gene_symbol) %>%
+    filter(mouse_gene_symbol != "") %>%
+    arrange(mouse_gene_symbol, human_gene_symbol) %>%
     group_by(mouse_gene_symbol) %>%
     summarize(
-        mouse_gene_symbol = unique(mouse_gene_symbol),
-        mouse_chromosome = unique(mouse_chromosome),
-        entity_type = unique(entity_type),
+        mouse_chromosome = paste0(unique(mouse_chromosome), collapse = ", "),
+        human_gene_symbol = paste0(unique(human_gene_symbol), collapse = ", "),
+        human_chromosome = paste0(unique(human_chromosome), collapse = ", "),
+        human_gene_symbol_unique = gsub(",.*", "", human_gene_symbol),
+        human_chromosome_unique = gsub(",.*", "", human_chromosome),
+        entity_type = paste0(unique(entity_type), collapse = ", "),
         category = paste0(unique(category), collapse = ", "),
         parent = paste0(unique(parent), collapse = ", "),
         consensus_score = max(consensus_score, na.rm = TRUE),
         is_cs = ifelse(str_detect(parent, "transmembrane|cell_surface|adhesion|junction"), TRUE, FALSE),
-        database_cs = paste0(unique(database_cs), collapse = ", "),
+        database_cs = paste0(unique(database_cs), collapse = ", ")
         ) %>%
-    ungroup() %>%
-    filter(mouse_gene_symbol != "")
+    dplyr::select(mouse_gene_symbol, mouse_chromosome, human_gene_symbol, human_chromosome, human_gene_symbol_unique, human_chromosome_unique, entity_type, category, parent, consensus_score, is_cs, database_cs) %>%
+    ungroup()
 
+# visualize output
 head(mouse.omnipath.db)
 ```
 
@@ -192,6 +230,7 @@ head(mouse.regulon.db)
 #| vscode: {languageId: r}
 # merge cell surface and transcription factor annotations
 mouse.omnipath.db <- mouse.omnipath.db %>%
+    mutate(is_tf = ifelse(mouse_gene_symbol %in% mouse.regulon.db$mouse_gene_symbol, TRUE, FALSE)) %>%
     merge(., mouse.regulon.db, by = "mouse_gene_symbol", all.x = TRUE)
 head(mouse.omnipath.db)
 ```
@@ -199,14 +238,7 @@ head(mouse.omnipath.db)
 ```{r eval=FALSE}
 #| vscode: {languageId: r}
 # save OmniPathR databases for mouse gene annotation in TSV file
-# write.table(mouse.omnipath.db, "inst/extdata/release-105_mouse_omnipath_db.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
-```
-
-## Session information
-
-```{r}
-#| vscode: {languageId: r}
-sessionInfo()
+#write.table(mouse.omnipath.db, "inst/extdata/release-105_mouse_omnipath_db.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 ```
 
 

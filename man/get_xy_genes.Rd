@@ -4,10 +4,12 @@
 \alias{get_xy_genes}
 \title{Get genes from X and Y chromosomes}
 \usage{
-get_xy_genes(org = "human")
+get_xy_genes(org = "human", ...)
 }
 \arguments{
 \item{org}{Organism to query. Either "human" or "mouse". Default is "human".}
+
+\item{...}{Additional arguments passed to \code{import_biomart_human} or \code{import_biomart_mouse}.}
 }
 \value{
 A character vector containing gene symbols from X and Y chromosomes.

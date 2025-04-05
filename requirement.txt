@@ -16,9 +16,10 @@ usethis::use_github_action()
 ## checklist
 # add new functions (make sure dont run examples, check if other function uses this)
 # update package dependencies on zzz.R and DESCRIPTION
+# update package version on DESCRIPTION
+# test/update vignettes
 # rebuild package (documnet, roxygenise, install)
 # git commit changes in develop and check/pre-release
-# update vignettes
 # git merge and push to main
 
 ####################### GitHub #######################

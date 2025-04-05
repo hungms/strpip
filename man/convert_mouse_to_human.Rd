@@ -4,21 +4,17 @@
 \alias{convert_mouse_to_human}
 \title{Convert mouse gene symbols to human gene symbols}
 \usage{
-convert_mouse_to_human(genes, one.to.many = FALSE)
+convert_mouse_to_human(genes)
 }
 \arguments{
 \item{genes}{A vector of mouse gene symbols to convert}
-
-\item{one.to.many}{Logical. If TRUE, returns all possible human gene mappings,
-including cases where one mouse gene maps to multiple human genes.}
 }
 \value{
-If \code{one.to.many = FALSE}, returns a vector of unique human gene symbols.
-If \code{one.to.many = TRUE}, returns a data frame with all possible mappings.
+A data frame with all possible mappings.
 }
 \description{
-Converts a list of mouse (MGI) gene symbols to their human (HGNC) equivalents.
-By default, returns only one-to-one mappings to ensure accuracy.
+Converts a vector of mouse (MGI) gene symbols to their human (HGNC) equivalents.
+By default, returns a data frame with all possible mappings.
 }
 \examples{
 \dontrun{

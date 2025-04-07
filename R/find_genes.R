@@ -16,12 +16,12 @@ get_xy_genes <- function(org = "human", ...) {
   
   # Get the biomart dictionary
   if(org == "human"){
-    biomart_dict <- import_biomart_human(...)}
+    biomart_dict_human <- import_biomart_human(...)}
   else{
-    biomart_dict <- import_biomart_mouse(...)}
+    biomart_dict_mouse <- import_biomart_mouse(...)}
   
   # Extract genes on X and Y chromosomes
-  xy_genes <- biomart_dict %>% 
+  xy_genes <- get(paste0("biomart_dict_", org)) %>% 
       dplyr::filter(!!rlang::sym(paste0(org, "_chromosome")) %in% c("X", "Y")) %>%
       dplyr::select(!!rlang::sym(paste0(org, "_gene_symbol"))) %>%
       .[[1]] %>%
@@ -53,12 +53,12 @@ get_mt_genes <- function(org = "human") {
   
   # Get the biomart dictionary
   if(org == "human"){
-    biomart_dict <- import_biomart_human(...)}
+    biomart_dict_human <- import_biomart_human(...)}
   else{
-    biomart_dict <- import_biomart_mouse(...)}
+    biomart_dict_mouse <- import_biomart_mouse(...)}
   
   # Extract mitochondrial genes
-  mt_genes <- biomart_dict %>% 
+  mt_genes <- get(paste0("biomart_dict_", org)) %>% 
       dplyr::filter(!!rlang::sym(paste0(org, "_chromosome")) %in% c("MT")) %>%
       dplyr::select(!!rlang::sym(paste0(org, "_gene_symbol"))) %>%
       .[[1]] %>%

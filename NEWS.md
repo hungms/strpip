@@ -4,22 +4,25 @@
 ## v0.1.1
 
 ### New Features
+* **BiomaRt Functions**:
+  - Replaced `import_biomart` with `import_biomart_mouse`, `import_biomart_human`, `import_biomart_orthologs` for wider functionality.
+
 * **Gene Conversion Functions**:
   - Added `convert_human_to_mouse()`: Converts human gene symbols to mouse orthologs with support for various mapping methods (one-to-one, one-to-many, etc.).
   - Added `convert_mouse_to_human()`: Converts mouse gene symbols to human orthologs with similar mapping capabilities.
   - Added `convert_orthologs_vector()`: A versatile function for converting gene symbols between species, supporting one-to-one, many-to-one, and many-to-many conversions.
   - Added `convert_orthologs_matrix()`: Converts matrices of gene expression data between human and mouse, handling various mapping scenarios.
+  - Made compatible with `import_biomart_orthologs`
 
 * **Database Integration**:
-  - Introduced `get_human_mouse_mapping()`: Retrieves gene mapping data between human and mouse, loading from a file or creating it dynamically using biomaRt if the file is not found.
-  - Added `find_homologs()`: A general function for finding homologs between species, currently supporting human and mouse gene symbols.
+  - Added release-105 database for human, mouse and orthologs for all `BiomaRt Functions`
 
 ### Documentation
 * Updated pkgdown website to include new gene conversion functions and their usage examples.
 * Added detailed documentation for each new function, including parameters, return values, and examples.
 
 ### Bug Fixes
-* Fixed issues with gene symbol parsing in conversion functions to handle edge cases more robustly.
+* Updated `get_xy_genes` and `get_mt_genes` to retrieve all possible XY and MT genes for each organism, beyond the ortholog genes.
 
 ### Other Changes
 * Improved error handling in gene conversion functions to provide clearer messages for invalid inputs.

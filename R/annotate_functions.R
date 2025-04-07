@@ -64,7 +64,9 @@ run_annotation <- function(df, gene_column = "gene", org = "human", release = "1
     }
     
     # Find annotation file
-    annotation_file <- find_annotation_file(org, release)
+    files <- list.files(system.file("extdata", package = "strpip"), full.names = TRUE)
+    pattern <- paste0("release-", release, "_", org, "_omnipath_db.tsv")
+    annotation_file <- files[grep(pattern, files)][1]
     
     # Read and merge annotations
     tryCatch({
@@ -84,30 +86,4 @@ run_annotation <- function(df, gene_column = "gene", org = "human", release = "1
                ". Returning original data frame.", call. = FALSE)
         return(df)
     })
-}
-
-#' Find OmniPath Annotation File
-#'
-#' Internal function to locate the correct annotation file based on organism and release.
-#'
-#' @param org Organism type ("human" or "mouse")
-#' @param release Ensembl release version
-#' @return Path to the annotation file
-#' @keywords internal
-find_annotation_file <- function(org, release) {
-    # Find available files
-    files <- list.files(system.file("extdata", package = "strpip"), full.names = TRUE)
-    
-    # Filter for appropriate file
-    pattern <- paste0("release-", release, "_", org, "_omnipath_db.tsv")
-    matching_files <- files[grep(pattern, files)]
-    
-    # Check if file exists
-    if (length(matching_files) == 0) {
-        stop("Annotation file not found for organism '", org, 
-             "' and release '", release, "'. Available files: ", 
-             paste(basename(files), collapse = ", "), call. = FALSE)
-    }
-    
-    return(matching_files[1])
 }

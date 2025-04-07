@@ -1,88 +1,4 @@
-#' Import BioMart data from Ensembl archive
-#'
-#' Retrieves archived ensembl biomarts from web and creates a mapping dictionary between
-#' human and mouse genes.
-#'
-#' @param host URL to retrieve archived ensembl biomarts. Default is the December 2021 archive.
-#' @return A data frame containing gene mappings and chromosome information
-#' @examples
-#' \dontrun{
-#' biomart_dict <- import_biomart()
-#' head(biomart_dict)
-#' }
-#' @export
-import_biomart <- function(host = 'https://dec2021.archive.ensembl.org') {
-   # Create biomart connections
-   tryCatch({
-     human_biomart <- biomaRt::useMart("ensembl", host = host, dataset = "hsapiens_gene_ensembl")
-     mouse_biomart <- biomaRt::useMart("ensembl", host = host, dataset = "mmusculus_gene_ensembl")
-     
-     # Get linked datasets
-     biomart_dict <- biomaRt::getLDS(attributes = c("mgi_symbol", "chromosome_name"), # Mouse attributes
-                    filters = "", # No specific filter, retrieve all genes
-                    values = NULL, # No specific values, retrieve all genes
-                    mart = mouse_biomart, # Mouse BioMart
-                    attributesL = c("hgnc_symbol", "chromosome_name"), # Human attributes
-                    martL = human_biomart, # Human BioMart
-                    uniqueRows = TRUE) # Remove duplicate rows
-     
-     # Process the data
-     biomart_dict <- biomart_dict %>% 
-       dplyr::mutate(
-           mouse_gene_symbol = MGI.symbol,
-           human_gene_symbol = HGNC.symbol,
-           mouse_chromosome = Chromosome.scaffold.name,
-           human_chromosome = Chromosome.scaffold.name.1) %>%
-       dplyr::select(mouse_gene_symbol, mouse_chromosome, human_gene_symbol, human_chromosome) %>%
-       dplyr::filter(stringr::str_detect(mouse_gene_symbol, "[a-z]") | stringr::str_detect(human_gene_symbol, "[A-Z]"))
-     
-     # Store in package environment
-     assign("biomart_dict", biomart_dict, envir = .strpip_env)
-     
-     # Return for direct use
-     return(biomart_dict)
-   }, error = function(e) {
-     stop("Error accessing BioMart: ", e$message, 
-          "\nEnsure you have a working internet connection or try using import_biomart_local() instead.", 
-          call. = FALSE)
-   })
-}
 
-#' Import BioMart data from local file
-#'
-#' Retrieves gene mapping data from a local TSV file instead of querying Ensembl.
-#' This is faster than `import_biomart()` but requires the data file to be present.
-#'
-#' @param release Ensembl release number. Default is "105".
-#' @return A data frame containing gene mappings between species
-#' @examples
-#' \dontrun{
-#' biomart_dict <- import_biomart_local()
-#' head(biomart_dict)
-#' }
-#' @export
-import_biomart_local <- function(release = "105") {
-    file <- paste0(system.file("extdata", package = "strpip"), "/release-", release, ".tsv")
-    
-    if (!file.exists(file)) {
-      stop("BioMart data file not found: ", file, 
-           "\nMake sure the package is properly installed.", call. = FALSE)
-    }
-    
-    tryCatch({
-      biomart_dict <- utils::read.table(file, header = TRUE, sep = "\t") %>%
-        dplyr::filter(stringr::str_detect(mouse_gene_symbol, "[a-z]") & 
-                     stringr::str_detect(human_gene_symbol, "[A-Z]"))
-      
-      # Store in package environment
-      assign("biomart_dict", biomart_dict, envir = .strpip_env)
-      
-      # Return for direct use
-      return(biomart_dict)
-    }, error = function(e) {
-      stop("Error reading BioMart data file: ", e$message, call. = FALSE)
-    })
-}
 
 #' Convert mouse gene symbols to human gene symbols
 #' 
@@ -101,10 +17,10 @@ import_biomart_local <- function(release = "105") {
 convert_mouse_to_human <- function(genes) {
 
    # Get the biomart dictionary
-   biomart_dict <- get_biomart_dict()
+   biomart_dict_orthologs <- import_biomart_orthologs()
    
    # Filter to relevant genes and create mapping
-   biomart_dict_tmp <- biomart_dict %>% 
+   biomart_dict_tmp <- biomart_dict_orthologs %>% 
       dplyr::filter(mouse_gene_symbol %in% genes) %>%
       dplyr::select(c(mouse_gene_symbol, human_gene_symbol))
       
@@ -131,10 +47,10 @@ convert_mouse_to_human <- function(genes) {
 convert_human_to_mouse <- function(genes){
    
    # Get the biomart dictionary
-   biomart_dict <- get_biomart_dict()
+   biomart_dict_orthologs <- import_biomart_orthologs()
    
    # Filter to relevant genes and create mapping
-   biomart_dict_tmp <- biomart_dict %>% 
+   biomart_dict_tmp <- biomart_dict_orthologs %>% 
       dplyr::filter(human_gene_symbol %in% genes) %>%
       dplyr::select(c(human_gene_symbol, mouse_gene_symbol))
 

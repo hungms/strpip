@@ -24,6 +24,17 @@ library(OmnipathR)
 
 ## Retrieve biomRt database
 
+
+```{r}
+#| vscode: {languageId: r}
+# Import biomart database - this returns the biomart_dict directly now
+biomart_dict_mouse <- import_biomart_mouse(local = F)
+write.table(biomart_dict_mouse, "inst/extdata/release-105_biomart_dict_mouse.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+
+biomart_dict_human <- import_biomart_human(local = F)
+write.table(biomart_dict_human, "inst/extdata/release-105_biomart_dict_human.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+```
+
 ```{r}
 #| vscode: {languageId: r}
 # Import biomart database - this returns the biomart_dict directly now

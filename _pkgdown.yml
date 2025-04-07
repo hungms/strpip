@@ -20,33 +20,26 @@ articles:
 - title: Articles
   navbar: ~
   contents:
-  - rna_guide
-  - gsea_collection
+  - interoperability
+  - database
   - session_info
 reference:
-- title: Pipeline Functions
+- title: Annotate Functions
   contents:
-  - matches("run_deseq2pip")
-  - matches("pip")
-  - ends_with("_list")
-- title: Quality Control
+  - starts_with("run_annotation")
+- title: Gene Conversion
   contents:
-  - starts_with("remove_")
-  - matches("library")
-  - ends_with("pca")
-  - ends_with("distance")
-- title: Functional Analysis
-  contents:
-  - ends_with("_diffexp")
-  - ends_with("_gsea")
-- title: Plot Functions
-  contents: starts_with("plot_")
-- title: Format Functions
+  - starts_with("convert_human")
+  - starts_with("convert_mouse")
+  - starts_with("convert_orthologs")
+- title: BiomaRt Functions
   contents:
   - starts_with("import_")
-  - starts_with("get")
+  - starts_with("validate_")
+- title: Format Functions
+  contents:
+  - starts_with("convert_list_to_df")
   - starts_with("read_")
   - starts_with("save_")
-  - matches("summarize_genes")
-  - matches("enrichmentmap")
+  - starts_with("summarize_")
 

@@ -10,12 +10,15 @@
 #' head(xy_genes)
 #' }
 #' @export
-get_xy_genes <- function(org = "human") {
+get_xy_genes <- function(org = "human", ...) {
   # Validate organism parameter
   org <- validate_organism(org)
   
   # Get the biomart dictionary
-  biomart_dict <- get_biomart_dict()
+  if(org == "human"){
+    biomart_dict <- import_biomart_human(...)}
+  else{
+    biomart_dict <- import_biomart_mouse(...)}
   
   # Extract genes on X and Y chromosomes
   xy_genes <- biomart_dict %>% 
@@ -49,7 +52,10 @@ get_mt_genes <- function(org = "human") {
   org <- validate_organism(org)
   
   # Get the biomart dictionary
-  biomart_dict <- get_biomart_dict()
+  if(org == "human"){
+    biomart_dict <- import_biomart_human(...)}
+  else{
+    biomart_dict <- import_biomart_mouse(...)}
   
   # Extract mitochondrial genes
   mt_genes <- biomart_dict %>% 

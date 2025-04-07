@@ -28,30 +28,24 @@ library(OmnipathR)
 ```{r}
 #| vscode: {languageId: r}
 # Import biomart database - this returns the biomart_dict directly now
-biomart_dict_mouse <- import_biomart_mouse(local = F)
-write.table(biomart_dict_mouse, "inst/extdata/release-105_biomart_dict_mouse.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+biomart_dict_mouse <- import_biomart_mouse(local = T)
+biomart_dict_human <- import_biomart_human(local = T)
+head(biomart_dict_mouse)
+head(biomart_dict_human)
 
-biomart_dict_human <- import_biomart_human(local = F)
-write.table(biomart_dict_human, "inst/extdata/release-105_biomart_dict_human.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+# save biomart_dict to TSV file - only run this if you need to update the data
+#write.table(biomart_dict_mouse, "inst/extdata/release-105_biomart_dict_mouse.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+#write.table(biomart_dict_human, "inst/extdata/release-105_biomart_dict_human.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 ```
 
 ```{r}
 #| vscode: {languageId: r}
 # Import biomart database - this returns the biomart_dict directly now
 # biomart_dict <- import_biomart()
-biomart_dict <- import_biomart_local()
-```
-
-```{r}
-#| vscode: {languageId: r}
-# biomart_dict is a data frame that contains the biomart mouse and human gene symbols, and their corresponding chromosome
-head(biomart_dict)
-```
-
-```{r eval=FALSE}
-#| vscode: {languageId: r}
+biomart_dict_orthologs <- import_biomart_orthologs(local = T)
+head(biomart_dict_orthologs)
 # save biomart_dict to TSV file - only run this if you need to update the data
-# write.table(biomart_dict, "inst/extdata/release-105.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+# write.table(biomart_dict_orthologs, "inst/extdata/release-105_biomart_dict_orthologs.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 ```
 
 ## Build OmniPathR databases for gene annotation
@@ -59,7 +53,7 @@ head(biomart_dict)
 ```{r eval=FALSE}
 #| vscode: {languageId: r}
 # add human_gene_symbol and database_cs columns
-biomart_dict <- import_biomart_local()
+biomart_dict <- import_biomart_orthologs(local = T)
 biomart_dict <- biomart_dict %>% 
     dplyr::filter(human_gene_symbol != "") %>%
     group_by(human_gene_symbol, human_chromosome) %>%
@@ -153,7 +147,7 @@ head(human.omnipath.db)
 ```{r eval=FALSE}
 #| vscode: {languageId: r}
 # add human_gene_symbol and database_cs columns
-biomart_dict <- import_biomart_local()
+biomart_dict <- import_biomart_orthologs(local = T)
 biomart_dict <- biomart_dict %>% 
     dplyr::filter(mouse_gene_symbol != "") %>% 
     dplyr::filter(human_gene_symbol != "") %>%

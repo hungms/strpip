@@ -75,8 +75,8 @@ import_biomart_human <- function(host = 'https://dec2021.archive.ensembl.org', l
 import_biomart_orthologs <- function(host = 'https://dec2021.archive.ensembl.org', local = TRUE, release = "105") {
 
    if(local){
-      biomart_dict <- utils::read.table(file.path(system.file("extdata", package = "strpip"), paste0("/release-", release, "_biomart_dict_orthologs.tsv")), header = TRUE, sep = "\t")
-      assign("biomart_dict_orthologs", biomart_dict, envir = .strpip_env)
+      biomart_dict_orthologs <- utils::read.table(file.path(system.file("extdata", package = "strpip"), paste0("/release-", release, "_biomart_dict_orthologs.tsv")), header = TRUE, sep = "\t")
+      assign("biomart_dict_orthologs", biomart_dict_orthologs, envir = .strpip_env)
       get("biomart_dict_orthologs", envir = .strpip_env)}
    else{
       # Create biomart connections
@@ -122,13 +122,13 @@ import_biomart_orthologs <- function(host = 'https://dec2021.archive.ensembl.org
          
          biomart_dict_orthologs <- rbind(biomart_dict_mouse_to_human, biomart_dict_human_to_mouse) %>%
                distinct(mouse_gene_symbol, mouse_chromosome, human_gene_symbol, human_chromosome, .keep_all = TRUE)
+         return(biomart_dict_orthologs)
             
          }, error = function(e) {
          stop("Error accessing BioMart: ", e$message, 
                "\nEnsure you have a working internet connection or try using import_biomart_local() instead.", 
                call. = FALSE)
          })}
-   return(biomart_dict_orthologs)
 }
 
 #' Check if Gene Symbols Are Valid

@@ -232,7 +232,7 @@ head(mouse.omnipath.db)
 ```{r eval=FALSE}
 #| vscode: {languageId: r}
 # save OmniPathR databases for mouse gene annotation in TSV file
-write.table(mouse.omnipath.db, "inst/extdata/release-105_mouse_omnipath_db.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+#write.table(mouse.omnipath.db, "inst/extdata/release-105_mouse_omnipath_db.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 ```
 
 

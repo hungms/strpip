@@ -13,9 +13,6 @@
 #' }
 #' @export
 import_biomart_mouse <- function(host = 'https://dec2021.archive.ensembl.org', local = TRUE, release = "105") {
-   mouse_biomart <- biomaRt::useMart("ensembl", host = host, dataset = "mmusculus_gene_ensembl")
-   attributes <- c("mgi_symbol", "chromosome_name")
-   biomart_dict_mouse <- getBM(attributes = attributes, mart = mouse_biomart)
 
    if(local){
       biomart_dict_mouse <- read.table(file.path(system.file("extdata", package = "strpip"), paste0("release-", release, "_biomart_dict_mouse.tsv")), header = TRUE, sep = "\t")
@@ -25,6 +22,7 @@ import_biomart_mouse <- function(host = 'https://dec2021.archive.ensembl.org', l
       mouse_biomart <- biomaRt::useMart("ensembl", host = host, dataset = "mmusculus_gene_ensembl")
       attributes <- c("mgi_symbol", "chromosome_name")
       biomart_dict_mouse <- getBM(attributes = attributes, mart = mouse_biomart)
+      colnames(biomart_dict_mouse) <- c("mouse_gene_symbol", "mouse_chromosome")
       return(biomart_dict_mouse)
       }
 }
@@ -44,9 +42,6 @@ import_biomart_mouse <- function(host = 'https://dec2021.archive.ensembl.org', l
 #' @export
 
 import_biomart_human <- function(host = 'https://dec2021.archive.ensembl.org', local = TRUE, release = "105") {
-   human_biomart <- biomaRt::useMart("ensembl", host = host, dataset = "hsapiens_gene_ensembl")
-   attributes <- c("hgnc_symbol", "chromosome_name")
-   biomart_dict_human <- getBM(attributes = attributes, mart = human_biomart)
 
    if(local){
       biomart_dict_human <- read.table(file.path(system.file("extdata", package = "strpip"), paste0("release-", release, "_biomart_dict_human.tsv")), header = TRUE, sep = "\t")
@@ -56,6 +51,7 @@ import_biomart_human <- function(host = 'https://dec2021.archive.ensembl.org', l
       human_biomart <- biomaRt::useMart("ensembl", host = host, dataset = "hsapiens_gene_ensembl")
       attributes <- c("hgnc_symbol", "chromosome_name")
       biomart_dict_human <- getBM(attributes = attributes, mart = human_biomart)
+      colnames(biomart_dict_human) <- c("human_gene_symbol", "human_chromosome")
       return(biomart_dict_human)}
 }
 

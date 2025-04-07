@@ -4,7 +4,12 @@
 \alias{convert_orthologs_matrix}
 \title{Convert orthologs between human and mouse for an gene expression matrix}
 \usage{
-convert_orthologs_matrix(matrix, mode = "human_to_mouse", many.to.one = TRUE)
+convert_orthologs_matrix(
+  matrix,
+  mode = "human_to_mouse",
+  many.to.one = TRUE,
+  normalized = FALSE
+)
 }
 \arguments{
 \item{matrix}{A matrix of gene symbols to convert}
@@ -13,6 +18,19 @@ convert_orthologs_matrix(matrix, mode = "human_to_mouse", many.to.one = TRUE)
 
 \item{many.to.one}{Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.}
 }
+\value{
+A matrix of converted gene symbols
+}
 \description{
 Converts a matrix of gene symbols between human and mouse species.
+}
+\examples{
+\dontrun{
+matrix <- matrix(rnorm(100), nrow = 20, ncol = 5)
+rownames(matrix) <- c("gene1", "gene2", "gene3", "gene4", "gene5")
+colnames(matrix) <- c("sample1", "sample2", "sample3", "sample4", "sample5")
+
+human_matrix <- convert_orthologs_matrix(matrix, mode = "human_to_mouse", many.to.one = TRUE)
+mouse_matrix <- convert_orthologs_matrix(matrix, mode = "mouse_to_human", many.to.one = TRUE)
+}
 }

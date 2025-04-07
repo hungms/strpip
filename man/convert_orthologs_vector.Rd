@@ -13,6 +13,16 @@ convert_orthologs_vector(genes, mode = "human_to_mouse", one.to.many = TRUE)
 
 \item{one.to.many}{Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.}
 }
+\value{
+A vector of converted gene symbols
+}
 \description{
 Converts a vector of gene symbols between human and mouse species.
+}
+\examples{
+\dontrun{
+mouse_genes <- c("Trp53", "Cd4", "Cd8a")
+human_genes <- convert_orthologs_vector(mouse_genes, mode = "mouse_to_human", one.to.many = TRUE)
+print(human_genes)
+}
 }

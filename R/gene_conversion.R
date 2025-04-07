@@ -149,19 +149,27 @@ convert_human_to_mouse <- function(genes){
 #' @param genes A vector of gene symbols to convert
 #' @param mode The direction of conversion, either "human_to_mouse" or "mouse_to_human"
 #' @param one.to.many Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.
+#' @return A vector of converted gene symbols
+#' @examples
+#' \dontrun{
+#' mouse_genes <- c("Trp53", "Cd4", "Cd8a")
+#' human_genes <- convert_orthologs_vector(mouse_genes, mode = "mouse_to_human", one.to.many = TRUE)
+#' print(human_genes)
+#' }
+#' @export
 convert_orthologs_vector <- function(genes, mode = "human_to_mouse", one.to.many = TRUE){
    stopifnot(mode %in% c("human_to_mouse", "mouse_to_human"))
-   stopifnot(is.vector(genes))
    stopifnot(is.logical(one.to.many))
 
-   eval(parse(text = paste0("orthologs_df <- convert_", mode, "(", genes, ")")))
+   if(mode == "human_to_mouse"){
+      orthologs_df <- convert_human_to_mouse(genes)}
+   else{
+      orthologs_df <- convert_mouse_to_human(genes)}
 
    if(one.to.many){
-      mapped_genes <- orthologs_df %>% .[[2]] %>% unique(.)
-   }
+      mapped_genes <- orthologs_df %>% .[[2]] %>% unique(.)}
    else{
-      mapped_genes <- orthologs_df %>% distinct(.[[1]], .keep_all = TRUE) %>% .[[2]] %>% unique(.)
-   }
+      mapped_genes <- orthologs_df %>% distinct(.[[1]], .keep_all = TRUE) %>% .[[2]] %>% unique(.)}
    return(mapped_genes)
 }
 
@@ -172,14 +180,28 @@ convert_orthologs_vector <- function(genes, mode = "human_to_mouse", one.to.many
 #' @param matrix A matrix of gene symbols to convert
 #' @param mode The direction of conversion, either "human_to_mouse" or "mouse_to_human"
 #' @param many.to.one Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.
-convert_orthologs_matrix <- function(matrix, mode = "human_to_mouse", many.to.one = TRUE){
+#' @return A matrix of converted gene symbols
+#' @examples
+#' \dontrun{
+#' matrix <- matrix(rnorm(100), nrow = 20, ncol = 5)
+#' rownames(matrix) <- c("gene1", "gene2", "gene3", "gene4", "gene5")
+#' colnames(matrix) <- c("sample1", "sample2", "sample3", "sample4", "sample5")
+#'
+#' human_matrix <- convert_orthologs_matrix(matrix, mode = "human_to_mouse", many.to.one = TRUE)
+#' mouse_matrix <- convert_orthologs_matrix(matrix, mode = "mouse_to_human", many.to.one = TRUE)
+#' }
+#' @export
+convert_orthologs_matrix <- function(matrix, mode = "human_to_mouse", many.to.one = TRUE, normalized = FALSE){
 
    stopifnot(mode %in% c("human_to_mouse", "mouse_to_human"))
-   stopifnot(is.matrix(matrix))
    stopifnot(is.logical(many.to.one))
-   stopifnot(str_detect(rownames(matrix), "[A-Z]"))
+   stopifnot(any(stringr::str_detect(rownames(matrix), "[A-Z]")))
 
-   eval(parse(text = paste0("orthologs_df <- convert_", mode, "(", rownames(matrix), ")")))
+   if(mode == "human_to_mouse"){
+      orthologs_df <- convert_human_to_mouse(rownames(matrix))}
+   else{
+      orthologs_df <- convert_mouse_to_human(rownames(matrix))}
+
    orig.species <- colnames(orthologs_df)[[1]]
    mapped.species <- colnames(orthologs_df)[[2]]
 
@@ -188,10 +210,16 @@ convert_orthologs_matrix <- function(matrix, mode = "human_to_mouse", many.to.on
          as.data.frame() %>%
          rownames_to_column("gene") %>%
          pivot_longer(!gene, names_to = "sample", values_to = "exprs") %>%
-         merge(., orthologs_df, by.x = "gene", by.y = orig.species, all.x = TRUE) %>%
+         merge(., orthologs_df %>% distinct(!!sym(orig.species), .keep_all = TRUE), by.x = "gene", by.y = orig.species, all.x = TRUE) %>%
+         filter(!!sym(mapped.species) != "NA") %>%
          pivot_wider(names_from = sample, values_from = exprs) %>%
-         column_to_rownames("gene") %>%
-         as.matrix()}
+         dplyr::select(-c(gene)) %>%
+         as.data.frame(.)
+
+      mapped_vector <- mapped_matrix[[mapped.species]]
+      mapped_matrix[[mapped.species]] <- NULL
+      mapped_matrix <- summarize_genes(mapped_matrix, gene_sym_vec = mapped_vector, normalized = normalized)
+         }
    else{
       orthologs_df <- orthologs_df %>% 
          group_by(human_gene_symbol) %>%
@@ -200,13 +228,15 @@ convert_orthologs_matrix <- function(matrix, mode = "human_to_mouse", many.to.on
          mutate(mn = n()) %>%
          filter(hn == 1 & mn == 1)
       orthologs_df <- orthologs_df[c(1,2)]
-      mapped_matrix <- matrix[which(rownames(matrix) %in% orig.species),]
+      mapped_matrix <- matrix[which(rownames(matrix) %in% orthologs_df[[orig.species]]),]
+
       mapped_matrix <- mapped_matrix %>%
          as.data.frame() %>%
          merge(., orthologs_df, by.x = 0, by.y = orig.species, all.x = TRUE) %>%
-         dplyr::select(-c(orig.species)) %>%
+         dplyr::select(-c("Row.names")) %>%
          column_to_rownames(mapped.species) %>%
-         as.matrix()}
-   return(mapped_genes)
+         as.data.frame(.)
+         }
+   return(mapped_matrix)
 }
 

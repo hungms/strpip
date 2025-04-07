@@ -3,6 +3,7 @@
 #' Retrieves all gene symbols located on the X and Y chromosomes for a specified organism.
 #'
 #' @param org Organism to query. Either "human" or "mouse". Default is "human".
+#' @param ... Additional arguments passed to `import_biomart_human` or `import_biomart_mouse`.
 #' @return A character vector containing gene symbols from X and Y chromosomes.
 #' @examples
 #' \dontrun{
@@ -40,6 +41,7 @@ get_xy_genes <- function(org = "human", ...) {
 #' Retrieves all gene symbols located on the mitochondrial chromosome for a specified organism.
 #'
 #' @param org Organism to query. Either "human" or "mouse". Default is "human".
+#' @param ... Additional arguments passed to `import_biomart_human` or `import_biomart_mouse`.
 #' @return A character vector containing mitochondrial gene symbols.
 #' @examples
 #' \dontrun{
@@ -47,7 +49,7 @@ get_xy_genes <- function(org = "human", ...) {
 #' head(mt_genes)
 #' }
 #' @export
-get_mt_genes <- function(org = "human") {
+get_mt_genes <- function(org = "human", ...) {
   # Validate organism parameter
   org <- validate_organism(org)
   

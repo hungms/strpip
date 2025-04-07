@@ -23,14 +23,16 @@ usethis::use_github_action()
 # git commit -m "update"
 # git push origin develop
 
-## Rebase <develop>
+## Merge <develop> with <check/pre-release>
+# git checkout check/pre-release
+# git reset --hard develop
+# git push -f origin check/pre-release
 # git rebase -i HEAD~n
-# git push -f origin main
-# git rebase --abort
+# git push -f origin check/pre-release
 
-## Merge <develop> with <check/pre-release or main>
+## Merge <check/pre-release> with <main>
 # git checkout main
-# git merge develop
+# git reset --hard check/pre-release
 # git push -f origin main
 
 ## Tag the release in <main>

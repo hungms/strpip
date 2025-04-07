@@ -89,6 +89,34 @@ convert_orthologs_vector <- function(genes, mode = "human_to_mouse", one.to.many
    return(mapped_genes)
 }
 
+
+
+#' Convert orthologs between human and mouse for a data frame
+#'
+#' Converts a data frame of gene symbols between human and mouse species.
+#'
+#' @param df A data frame of gene symbols to convert
+#' @param mode The direction of conversion, either "human_to_mouse" or "mouse_to_human"
+#' @param many.to.one Logical. Default is FALSE to return only unique mappings (one/many to one). If TRUE, returns all possible mouse gene mappings (one to many), including cases where one human gene maps to multiple mouse genes.
+convert_orthologs_df <- function(df, gene_column, mode = "human_to_mouse"){
+   stopifnot(mode %in% c("human_to_mouse", "mouse_to_human"))
+
+   if(mode == "human_to_mouse"){
+      orthologs_df <- convert_human_to_mouse(df[[gene_column]]) %>% 
+         group_by(human_gene_symbol) %>%
+         summarize(mouse_gene_symbol = paste(mouse_gene_symbol, collapse = ", ")) %>%
+         ungroup()}
+   else{
+      orthologs_df <- convert_mouse_to_human(df[[gene_column]]) %>% 
+         group_by(mouse_gene_symbol) %>%
+         summarize(human_gene_symbol = paste(human_gene_symbol, collapse = ", ")) %>%
+         ungroup()}
+
+   mapped_df <- df %>%
+      merge(., orthologs_df, by.x = gene_column, by.y = paste0(gsub("_.*", "", mode), "_gene_symbol"), all.x = TRUE)
+   return(mapped_df)
+   }
+
 #' Convert orthologs between human and mouse for an gene expression matrix
 #'
 #' Converts a matrix of gene symbols between human and mouse species.

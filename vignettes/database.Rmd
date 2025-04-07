@@ -197,7 +197,7 @@ mouse.omnipath.db <- mouse.omnipath.db %>%
         is_cs = ifelse(str_detect(parent, "transmembrane|cell_surface|adhesion|junction"), TRUE, FALSE),
         database_cs = paste0(unique(database_cs), collapse = ", ")
         ) %>%
-    dplyr::select(mouse_gene_symbol, mouse_chromosome, human_gene_symbol, human_chromosome, human_gene_symbol_unique, human_chromosome_unique, entity_type, category, parent, consensus_score, database_cs) %>%
+    dplyr::select(mouse_gene_symbol, mouse_chromosome, human_gene_symbol, human_chromosome, human_gene_symbol_unique, human_chromosome_unique, entity_type, category, parent, consensus_score, is_cs, database_cs) %>%
     ungroup()
 
 # visualize output
@@ -230,6 +230,7 @@ head(mouse.regulon.db)
 #| vscode: {languageId: r}
 # merge cell surface and transcription factor annotations
 mouse.omnipath.db <- mouse.omnipath.db %>%
+    mutate(is_tf = ifelse(mouse_gene_symbol %in% mouse.regulon.db$mouse_gene_symbol, TRUE, FALSE)) %>%
     merge(., mouse.regulon.db, by = "mouse_gene_symbol", all.x = TRUE)
 head(mouse.omnipath.db)
 ```

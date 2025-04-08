@@ -89,7 +89,7 @@ get_mt_genes <- function(org = "human", ...) {
 #' head(rb_genes)
 #' }
 #' @export
-get_str_genes <- function(org = "human", str = c("rb")) {
+get_str_genes <- function(org = "human", str = c("rb"), ...) {
   # Validate organism parameter
   org <- validate_organism(org)
   
@@ -110,10 +110,13 @@ get_str_genes <- function(org = "human", str = c("rb")) {
     collapse = "|")
   
   # Get the biomart dictionary
-  biomart_dict <- get_biomart_dict()
+  if(org == "human"){
+    biomart_dict_human <- import_biomart_human(...)}
+  else{
+    biomart_dict_mouse <- import_biomart_mouse(...)}
   
   # Extract genes matching the pattern
-  genes <- biomart_dict %>% 
+  genes <- get(paste0("biomart_dict_", org)) %>% 
       dplyr::filter(stringr::str_detect(
         !!rlang::sym(paste0(org, "_gene_symbol")), 
         pattern_strings)) %>%

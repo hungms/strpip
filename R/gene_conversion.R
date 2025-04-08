@@ -116,7 +116,7 @@ convert_orthologs_df <- function(df, gene_column, mode = "human_to_mouse"){
       merge(., orthologs_df, by.x = gene_column, by.y = paste0(gsub("_.*", "", mode), "_gene_symbol"), all.x = TRUE)
    return(mapped_df)
    }
-
+   
 #' Convert orthologs between human and mouse for an gene expression matrix
 #'
 #' Converts a matrix of gene symbols between human and mouse species.

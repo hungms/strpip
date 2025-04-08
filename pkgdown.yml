@@ -4,8 +4,9 @@ pkgdown_sha: ~
 articles:
   database: database.html
   interoperability: interoperability.html
+  session_info: session_info.html
   strpip: strpip.html
-last_built: 2025-04-02T09:52Z
+last_built: 2025-04-08T00:43Z
 urls:
   reference: https://hungms.github.io/strpip/reference
   article: https://hungms.github.io/strpip/articles

@@ -1,6 +1,10 @@
 
 # strpip
 
+## v0.1.2 (20250430)
+### Bugfix
+* Update `read.table(fill = TRUE)` for `read_gmt()`
+
 ## v0.1.1
 
 ### New Features

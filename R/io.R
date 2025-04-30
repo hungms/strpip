@@ -59,7 +59,7 @@ read_gmt <- function(gmt) {
     
     # Try to read and process the file
     tryCatch({
-        gmt.df <- utils::read.table(gmt, sep = "\t", header = FALSE, row.names = 1)
+        gmt.df <- utils::read.table(gmt, sep = "\t", header = FALSE, row.names = 1, fill = TRUE)
         
         # Check if file has expected format
         if (ncol(gmt.df) < 1) {
@@ -292,6 +292,7 @@ summarize_genes <- function(df, gene_sym_vec, normalized = FALSE) {
         # Reshape to long format for easier aggregation
         df_long <- df %>%
             as.data.frame() %>%
+            dplyr::filter(!is.na(Gene.Name) & str_detect(Gene.Name, "[A-Z]")) %>%
             tidyr::pivot_longer(!c("Gene.Name"), names_to = "samples", values_to = "exprs") %>%
             dplyr::group_by(.data$Gene.Name, .data$samples)
     

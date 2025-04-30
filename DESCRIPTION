@@ -1,6 +1,6 @@
 Package: strpip
 Title: Data Structure Pipelines for Genomic Analysis
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: 
     person("Hung", "M", , "hungm@example.com", role = c("aut", "cre"))
 Description: A comprehensive R package for genomic data structure pipelines, providing tools for data format conversions, gene symbol mapping, gene set operations, expression data processing, and functional annotation integration.

@@ -56,7 +56,7 @@ install.packages(c("dplyr", "tidyr", "tibble", "stringr", "magrittr"))
 # Install Bioconductor packages
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install(c("biomaRt", "OmnipathR"))
+BiocManager::install(c("biomaRt"))
 ```
 
 These packages provide:

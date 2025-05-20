@@ -30,16 +30,11 @@
   errorMessage <- NULL
   
   packages <- c(
-    "dplyr", "tidyr", "tibble", "stringr", "utils", "rlang","magrittr")
+    "dplyr", "tidyr", "tibble", "stringr", "utils", "rlang","magrittr", "data.table", "biomaRt")
 
   invisible(lapply(packages, function(pkg) {
     if (requireNamespace(pkg, quietly = TRUE)) {
       library(pkg, character.only = TRUE)
     }
   }))
-
-  if (requireNamespace("OmnipathR", quietly = TRUE)) {
-    library("OmnipathR")}
-  if (requireNamespace("biomaRt", quietly = TRUE)) {
-    library("biomaRt")}
 }

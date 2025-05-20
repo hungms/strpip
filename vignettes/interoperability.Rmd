@@ -25,17 +25,11 @@ library(strpip)
 ```{r}
 #| vscode: {languageId: r}
 # load example expression matrix
-data_file <- system.file("extdata", "GSE224465.tsv", package = "strpip")
-if (file.exists(data_file)) {
-  counts <- read.table(data_file, sep = "\t", header = TRUE, row.names = 1)
-} else {
-  # Create example data if file doesn't exist
-  set.seed(123)
-  counts <- matrix(rnorm(100), nrow = 20, ncol = 5)
-  rownames(counts) <- paste0("gene", 1:20)
-  colnames(counts) <- paste0("sample", 1:5)
-  counts <- as.data.frame(counts)
-}
+set.seed(123)
+counts <- matrix(rnorm(100), nrow = 20, ncol = 5)
+rownames(counts) <- paste0("gene", 1:20)
+colnames(counts) <- paste0("sample", 1:5)
+counts <- as.data.frame(counts)
 counts[1:5, 1:5]
 dim(counts)
 ```
@@ -46,16 +40,15 @@ dim(counts)
 #| vscode: {languageId: r}
 # Save expression matrix as GCT file
 temp_gct <- tempfile(fileext = ".gct")
-write_gct(counts, save_name = basename(temp_gct), save_dir = dirname(temp_gct))
-```
+write_gct(counts, file = temp_gct)
 
-```{r}
-#| vscode: {languageId: r}
 # Load expression matrix from GCT file
 counts <- read_gct(temp_gct)
 counts[1:5, 1:5]
 dim(counts)
 ```
+
+
 ## GMT files
 
 ```{r}
@@ -65,22 +58,31 @@ xy.genes <- get_xy_genes(org = "mouse")
 mt.genes <- get_mt_genes(org = "mouse")
 vdj.genes <- get_str_genes(org = "mouse", str = c("tcr", "bcr"))
 gene.list <- list(XY = xy.genes, MT = mt.genes, VDJ = vdj.genes)
-
-# Convert list to data frame
-gene.df <- convert_list_to_df(gene.list)
-head(gene.df)
 ```
 
 ```{r}
 #| vscode: {languageId: r}
 # Save gene list as GMT file
 temp_gmt <- tempfile(fileext = ".gmt")
-write_gmt(gene.df, save_name = basename(temp_gmt), save_dir = dirname(temp_gmt))
+write_gmt(gene.list, file = temp_gmt)
+
+# Load gene list from GMT file  
+gmt <- read_gmt(temp_gmt)
+head(gmt)
 ```
+
 
 ```{r}
 #| vscode: {languageId: r}
-# Load gene list from GMT file  
+# Convert list to data frame
+gene.df <- list_to_df(gene.list)
+head(gene.df)
+
+# Save gene data frame as GMT file
+temp_gmt <- tempfile(fileext = ".gmt")
+write_gmt(gene.df, file = temp_gmt)
+
+# Load gene data frame from GMT file  
 gmt <- read_gmt(temp_gmt)
 head(gmt)
 ```

@@ -21,7 +21,6 @@ articles:
   navbar: ~
   contents:
   - interoperability
-  - database
   - session_info
 reference:
 - title: Annotate Functions
@@ -29,22 +28,25 @@ reference:
   - starts_with("run_annotation")
 - title: Gene Conversion
   contents:
-  - starts_with("convert_human")
-  - starts_with("convert_mouse")
-  - starts_with("convert_orthologs")
+  - matches("get_conversion_dict")
+  - starts_with("convert_")
 - title: BiomaRt Functions
   contents:
   - starts_with("import_")
-  - starts_with("validate_")
 - title: Find Genes
   contents:
   - starts_with("get_")
   - matches("string")
-- title: Format Functions
+- title: Summarize Genes
   contents:
   - starts_with("summarize_")
-  - starts_with("convert_list_to_df")
+- title: Format Functions
+  contents:
+  - starts_with("list_to_df")
+  - starts_with("df_to_list")
   - starts_with("read_")
   - starts_with("write_")
   - starts_with("save_")
-
+- title: Validate Functions
+  contents:
+  - starts_with("validate_")

@@ -1,6 +1,25 @@
 
 # strpip
 
+## v0.1.3 (20250520)
+
+### New Features
+- `df_to_list` opposite to existing `list_to_df`
+
+### Enhancement
+- Rename `import_biomart_orthologs()` as `import_biomart()`
+- Rename `convert_human_to_mouse()` and `convert_human_to_mouse()` as `get_conversion_dict()`
+- Rename `convert_orthologue_vector()` to `convert_genes()`
+- Rename `convert_orthologue_df()` to `convert_df()`
+- Rename `convert_orthologue_matrix` to `convert_exprs()`
+- `write_gmt()` now takes gene list as input
+- Replace `save_name` and `save_dir` argument with `file` for `write_gmt()` and `write_gct()`
+- Improve efficiency of `summarize_genes()` with data.table
+- Rename `inst/extdata/` files to `biodict_*` and `omnipathdb_*`
+
+### Bugfix
+- `write_gmt()` uses `writeLines()` instead of `write.table()`
+
 ## v0.1.2 (20250430)
 ### Bugfix
 * Update `read.table(fill = TRUE)` for `read_gmt()`

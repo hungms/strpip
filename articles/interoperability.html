@@ -62,7 +62,7 @@
                         <h4 data-toc-skip class="author">Author: Matthew
 Hung</h4>
             
-            <h4 data-toc-skip class="date">Last Updated: 2025/05/20</h4>
+            <h4 data-toc-skip class="date">Last Updated: 2025/05/21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/hungms/strpip/blob/main/vignettes/interoperability.Rmd" class="external-link"><code>vignettes/interoperability.Rmd</code></a></small>
       <div class="d-none name"><code>interoperability.Rmd</code></div>
@@ -149,18 +149,18 @@ Hung</h4>
 <code class="sourceCode R"><span><span class="co"># Save gene list as GMT file</span></span>
 <span><span class="va">temp_gmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".gmt"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/write_gmt.html">write_gmt</a></span><span class="op">(</span><span class="va">gene.list</span>, file <span class="op">=</span> <span class="va">temp_gmt</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## GMT file written to /tmp/Rtmprfm9g5/file1f7870762712.gmt</span></span></code></pre>
+<pre><code><span><span class="co">## GMT file written to /tmp/Rtmp1CGcQs/file1f2d3b0bd25b.gmt</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load gene list from GMT file  </span></span>
 <span><span class="va">gmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_gmt.html">read_gmt</a></span><span class="op">(</span><span class="va">temp_gmt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##         XY      MT      VDJ</span></span>
-<span><span class="co">## V3 Gm28489   mt-Tf    Igll1</span></span>
-<span><span class="co">## V4 Gm21867 mt-Rnr1 Trbv13-1</span></span>
-<span><span class="co">## V5 Gm29448   mt-Tv Trbv12-2</span></span>
-<span><span class="co">## V6 Gm21127 mt-Rnr2 Trbv13-2</span></span>
-<span><span class="co">## V7 Gm28488  mt-Tl1 Trbv12-3</span></span>
-<span><span class="co">## V8 Gm20816  mt-Nd1 Trbv13-3</span></span></code></pre>
+<pre><code><span><span class="co">##      XY        MT        VDJ       </span></span>
+<span><span class="co">## [1,] "Gm28489" "mt-Tf"   "Igll1"   </span></span>
+<span><span class="co">## [2,] "Gm21867" "mt-Rnr1" "Trbv13-1"</span></span>
+<span><span class="co">## [3,] "Gm29448" "mt-Tv"   "Trbv12-2"</span></span>
+<span><span class="co">## [4,] "Gm21127" "mt-Rnr2" "Trbv13-2"</span></span>
+<span><span class="co">## [5,] "Gm28488" "mt-Tl1"  "Trbv12-3"</span></span>
+<span><span class="co">## [6,] "Gm20816" "mt-Nd1"  "Trbv13-3"</span></span></code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert list to data frame</span></span>
 <span><span class="va">gene.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_to_df.html">list_to_df</a></span><span class="op">(</span><span class="va">gene.list</span><span class="op">)</span></span>
@@ -176,18 +176,18 @@ Hung</h4>
 <code class="sourceCode R"><span><span class="co"># Save gene data frame as GMT file</span></span>
 <span><span class="va">temp_gmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".gmt"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/write_gmt.html">write_gmt</a></span><span class="op">(</span><span class="va">gene.df</span>, file <span class="op">=</span> <span class="va">temp_gmt</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## GMT file written to /tmp/Rtmprfm9g5/file1f782be15542.gmt</span></span></code></pre>
+<pre><code><span><span class="co">## GMT file written to /tmp/Rtmp1CGcQs/file1f2d31ca4617.gmt</span></span></code></pre>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load gene data frame from GMT file  </span></span>
 <span><span class="va">gmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_gmt.html">read_gmt</a></span><span class="op">(</span><span class="va">temp_gmt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gmt</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##         XY      MT      VDJ</span></span>
-<span><span class="co">## V3 Gm28489   mt-Tf    Igll1</span></span>
-<span><span class="co">## V4 Gm21867 mt-Rnr1 Trbv13-1</span></span>
-<span><span class="co">## V5 Gm29448   mt-Tv Trbv12-2</span></span>
-<span><span class="co">## V6 Gm21127 mt-Rnr2 Trbv13-2</span></span>
-<span><span class="co">## V7 Gm28488  mt-Tl1 Trbv12-3</span></span>
-<span><span class="co">## V8 Gm20816  mt-Nd1 Trbv13-3</span></span></code></pre>
+<pre><code><span><span class="co">##      XY        MT        VDJ       </span></span>
+<span><span class="co">## [1,] "Gm28489" "mt-Tf"   "Igll1"   </span></span>
+<span><span class="co">## [2,] "Gm21867" "mt-Rnr1" "Trbv13-1"</span></span>
+<span><span class="co">## [3,] "Gm29448" "mt-Tv"   "Trbv12-2"</span></span>
+<span><span class="co">## [4,] "Gm21127" "mt-Rnr2" "Trbv13-2"</span></span>
+<span><span class="co">## [5,] "Gm28488" "mt-Tl1"  "Trbv12-3"</span></span>
+<span><span class="co">## [6,] "Gm20816" "mt-Nd1"  "Trbv13-3"</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

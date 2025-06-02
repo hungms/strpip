@@ -74,6 +74,26 @@ get_mt_genes <- function(org, ...) {
   return(mt_genes)
 }
 
+
+#' Get cell cycle genes
+#'
+#' Retrieves gene symbols from cell cycle gene sets for a specified organism.
+#'
+#' @param org Organism to query. Either "human" or "mouse".
+#' @param ... Additional arguments passed to `import_biomart_human` or `import_biomart_mouse`.
+#' @return A character vector containing cell cycle gene symbols.
+#' @examples
+#' \dontrun{
+#' cc_genes <- get_cc_genes("human")
+#' head(cc_genes)
+#' }
+#' @export
+get_cc_genes <- function(org) {
+  cc_df <- read.table(file.path(system.file("extdata", package = "strpip"), paste0("cellcycle_", org, "_genes.tsv")), header = TRUE, sep = "\t")
+  cc_list <- df_to_list(cc_df)
+  return(cc_list)}
+
+
 #' Get genes matching specific patterns
 #'
 #' Retrieves gene symbols matching predefined patterns for specific gene families

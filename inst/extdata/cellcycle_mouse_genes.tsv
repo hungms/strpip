@@ -1,0 +1,141 @@
+Seurat_S	Seurat_G2M	Macosko_IG1.S	Macosko_S	Macosko_G2.M	Macosko_M	Macosko_M.G1
+Blm	Anln	Acd	Abcc5	Anln	Ahi1	Agpat3
+Brip1	Anp32e	Adamts1	Abhd10	Ap3d1	Akirin2	Akap13
+Casp8ap2	Aurka	Ankrd10	Asf1b	Arhgap19	Ankrd40	Amd1
+Ccne2	Aurkb	Apex2	Bbs2	Arl4a	Anln	Anp32e
+Cdc45	Birc5	Arglu1	Bivm	Armc1	Anp32b	Antxr1
+Cdc6	Bub1	Bard1	Blm	Asxl1	Anp32e	Bag3
+Cdca7	Cbx5	Brd7	Bmi1	Atl2	Arhgap19	Btbd3
+Chaf1b	Ccnb2	Capn7	Brca1	Aurkb	Arl6ip1	Cbx3
+Clspn	Cdc20	Casp2	Brip1	Bclaf1	Asxl1	Cdc42
+Dscc1	Cdc25c	Casp8ap2	Cald1	Bora	Atf7ip	Cdk7
+Dtl	Cdca2	Ccne1	Calm2	Brd8	Aurka	Cdkn3
+E2f8	Cdca3	Ccne2	Casp2	Bub3	Birc2	Cep70
+Exo1	Cdca8	Cdc25a	Ccdc14	1700066M21Rik	Birc5	Cnih4
+Fen1	Cdk1	Cdc6	Ccdc150	Casp3	Bub1	Ctr9
+Gins2	Cenpa	Cdca7	Cdc45	Cbx5	Cadm1	Cwc15
+Gmnn	Cenpe	Cdca7l	Cdc7	Ccdc107	Ccdc88a	Dcp1a
+Hells	Cenpf	Cep57	Cdca5	Ccna2	Ccdc90b	Dctn6
+Mcm2	Ckap2	Chaf1a	Cdkn2aip	Ccnf	Ccna2	Dexi
+Mcm4	Ckap2l	Chaf1b	Cenpm	Cdc16	Ccnb2	Dkc1
+Mcm5	Ckap5	Clspn	Cenpq	Cdc25c	Cdc20	Dnajb6
+Mcm6	Cks1b	Crebzf	Cers6	Cdca2	Cdc25b	Dsp
+Msh2	Cks2	Gm49369	Chml	Cdca3	Cdc27	Dynll1
+Nasp	Ctcf	Dis3	Coq9	Cdca8	Cdc42ep1	Eif4e
+Pcna	Dlgap5	Dnajc3	Cpne8	Cdk1	Cdca3	Elp3
+Pola1	Ect2	Atp5o	Crebzf	Cdkn1b	Cenpa	Fam189b
+Prim1	G2e3	Dscc1	Crls1	Cdkn2c	Cenpe	Foxk2
+Rad51	Gas2l3	Dtl	Depdc7	Cdr2	Cenpf	Fxr1
+Rad51ap1	Gtse1	E2f1	Dhfr	Cenpl	Cep55	G3bp1
+Rfc2	Hjurp	Eif2a	Dna2	Cep350	Cflar	Gata2
+Rpa2	Hmgb2	Esd	Dnajb4	Cfd	Cit	Gnb1
+Rrm1	Hmmr	Flad1	Atp5o	Cflar	Ckap2	Grpel1
+Rrm2	Kif11	Gins2	Dscc1	Chek2	Ckap5	Gspt1
+Slbp	Kif20b	Gins3	Dync1li2	Ckap2	Cks1b	Gtf3c4
+Tipin	Kif23	Gmnn	E2f8	Ckap2l	Cks2	Hif1a
+Tyms	Kif2c	Hells	Eif4ebp2	Cyth2	Cnot10	Hmg20b
+Ubr7	Lbr	Hoxb4	Esco2	Dcaf7	Cntrob	Hmgcr
+Uhrf1	Mki67	Hras	Exo1	Dhx8	Ctcf	Hsd17b11
+Ung	Ncapd2	Hsf2	Ezh2	Dnajb1	Ctnna1	Hspa8
+Usp1	Ndc80	Insr	Fanca	Entpd5	Ctnnd1	Ilf2
+Wdr76	Nek2	Ints8	Fanci	Espl1	Depdc1a	Jmjd1c
+	Nuf2	Ivns1abp	Fen1	Fadd	Depdc1b	Kdm5b
+	Nusap1	Lnpep	Gclm	Fam83d	Diaph3	2700049A03Rik
+	Psrc1	Luc7l3	Hells	Fan1	Dlgap5	Kif5b
+	Rangap1	Mcm2	Ints7	Fancd2	Dnajb1	Kpnb1
+	Smc4	Mcm4	Kat2a	G2e3	Dr1	Kras
+	Tacc3	Mcm5	Kat2b	Gabpb1	Dzip3	Larp1
+	Top2a	Mcm6	Lmo4	Gas1	E2f5	Gm12666
+	Tpx2	Mdm1	Lyrm7	Gas2l3	Ect2	Lrif1
+	Ttk	Med31	Man1a2	Haus8	Foxm1	Lyar
+	Tubb4b	Mri1	Map3k2	Hint3	Fyn	Morf4l2
+	Ube2c	Msh2	Mastl	Hipk2	G2e3	Mrpl19
+		Nasp	Mbd4	Hjurp	Gadd45a	Mrps18b
+		Nktr	Mcm8	Hmgb2	Gas2l3	Mrps2
+		Npat	Mycbp2	Hp1bp3	Got1	Msl1
+		Nup43	Nab1	Ifnar1	Grk6	Mtpn
+		Orc1	Nfe2l2	Iqgap3	Gtse1	Ncoa3
+		Osbpl6	Nsun3	Katna1	Hcfc1	Nfia
+		Pank2	Nt5dc1	Kctd9	Hmg20b	Nfic
+		Pcdh7	Nup160	Kdm4a	Hmgb3	Nucks1
+		Pcna	Ogt	Kif11	Hmmr	Nufip2
+		Plcxd1	Orc3	Kif20b	Hp1bp3	Nup37
+		Pms1	Osgin2	Kif22	Hps4	Odf2
+		Pnn	Phip	Kif23	Hs2st1	Opn3
+		Rab23	Phtf1	Kif5b	Hspa13	Pak1ip1
+		Recql4	Phtf2	Kifc5b	Hspa8	Pbk
+		Rmi2	Pkmyt1	Klf6	Kif14	Pcf11
+		Rnf113a2	Pola1	Kpna2	Kif20b	Plin3
+		Rnpc3	Prim1	Lbr	Kif2c	Ppp2ca
+		Sec62	Ptar1	Lix1l	Kif5b	Ppp2r2a
+		Skp2	Rad18	Lmnb1	Klf9	Ppp6r3
+		Slbp	Rad51	Mad2l1	Lbr	Prc1
+		Slc25a36	Rad51ap1	Melk	Lmna	Psen1
+		Srsf7	Rbbp8	Mgat2	Mcm4	Ptms
+		Ssr3	Reep1	Mid1	Mdc1	Pttg1
+		Taf15	Rfc2	Mis18bp1	Mis18bp1	Rad21
+		Tipin	Rhobtb3	Mnd1	Mki67	Rheb
+		Topbp1	Rmi1	Ncapd3	Mzt1	Slc39a10
+		Tra2a	Rpa2	Ncaph	Ncapd2	Snupn
+		Ttc14	Rrm1	Ncoa5	Ncoa5	Srsf3
+		Ubr7	Rrm2	Ndc80	Nek2	Stag1
+		Uhrf1	Rsrc2	Neil3	Nuf2	Taf9
+		Ung	Sap30bp	Nfic	Nup35	Tcerg1
+		Usp53	Slc38a2	Nipbl	Nup98	Tle3
+		Vps72	Sp1	Nmb	Nusap1	Tmem138
+		Wdr76	Srsf5	Nr3c1	Odf2	Tob2
+		Zmynd19	Svip	Nucks1	Pbk	Top1
+		Zfp367	Top2a	Numa1	Pcf11	Troap
+		Zranb2	Ttll7	Nusap1	Plk1	Tsc22d1
+			Tyms	Pif1	Poc1a	Tulp4
+			Ube2t	Pknox1	Pom121	Ube2d2a
+			Ubl3	Polq	Ppp1r10	Vangl1
+			Usp1	Ppp1r2	Prpsap1	Vcl
+			Zwint	Psmd11	Prr11	Wipf2
+				Psrc1	Psmg3	Wwc1
+				Rangap1	Ptp4a1	Yy1
+				Rccd1	Ptpn9	Zbtb7a
+				Rdh11	Pwp1	Zcchc10
+				Rnf141	Qrich1	Zfp24
+				Sap30	Rad51c	Zfp281
+				Ska3	Rangap1	Zfp593
+				Smc4	Rbm8a	
+				Stat1	Rcan1	
+				Stil	Rere	
+				Stk17b	Rnf126	
+				Suclg2	Rnf141	
+				Tfap2a	Rnps1	
+				Timp1	Rrp1	
+				Tnpo2	Sephs1	
+				Top2a	Sfpq	
+				Traip	Shcbp1	
+				Trim59	Smarcb1	
+				Trmt2a	Smarcd1	
+				Ttf2	Spag5	
+				Tuba1a	Sptbn1	
+				Tubb5	Srf	
+				Tubb2a	Srsf3	
+				Tubb4b	Ss18	
+				Tubd1	Tacc3	
+				Uaca	Thrap3	
+				Ube2c	Tle3	
+				Vps25	Tmem138	
+				Vta1	Tnpo1	
+				Wsb1	Tomm34	
+				Znhit2	Tpx2	
+					Trip13	
+					Tsg101	
+					Tsn	
+					Ttk	
+					Tubb4b	
+					Txndc9	
+					Txnrd1	
+					Ube2d2a	
+					Usp13	
+					Usp16	
+					Vangl1	
+					Wsb1	
+					Ywhah	
+					Zc3hc1	
+					Zmym1	
+					Zfp207	

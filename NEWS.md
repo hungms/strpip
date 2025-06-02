@@ -1,10 +1,17 @@
 
 # strpip
 
+## v0.1.4 (20250602)
+### New Features
+- `get_cc_genes()` to get Seurat and Mascoko cell cycle genes sets
+
+### Enhancement
+- `df_to_list()` to remove empty strings `""` or "NA" as character
+
 ## v0.1.3 (20250520)
 
 ### New Features
-- `df_to_list` opposite to existing `list_to_df`
+- `df_to_list()` opposite to existing `list_to_df()`
 
 ### Enhancement
 - Rename `import_biomart_orthologs()` as `import_biomart()`

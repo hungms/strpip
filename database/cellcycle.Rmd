@@ -1,0 +1,51 @@
+---
+title: Build cell cycle databases
+vignette: >
+  %\VignetteIndexEntry{Build cell cycle databases}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+author: "`r 'Author: Matthew Hung'`"
+date: "`r paste('Last Updated:', format(Sys.Date(), '%Y/%m/%d'))`"
+output:
+  html_document:
+    code_folding: hide
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+```{r}
+#| vscode: {languageId: r}
+options(timeout = 600)
+library(strpip)
+```
+
+```{r}
+#| vscode: {languageId: r}
+seurat <- read.table("inst/resources/Seurat_cell_cycle_genes.txt", header = TRUE, sep = "\t") %>% df_to_list()
+names(seurat) <- paste0("Seurat_", names(seurat))
+head(seurat)
+
+macosko <- read.table("inst/resources/macosko_cell_cycle_genes.txt", header = TRUE, sep = "\t") %>% df_to_list()
+macosko <- macosko[-c(length(macosko))]
+names(macosko) <- paste0("Macosko_", names(macosko))
+head(macosko)
+
+cc_df <- c(seurat, macosko) %>% list_to_df()
+names(cc_df)
+write.table(cc_df, "inst/extdata/cellcycle_human_genes.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+```
+
+
+```{r}
+#| vscode: {languageId: r}
+cc_list <- c(seurat, macosko)
+for (i in 1:length(cc_list)) {
+  cc_list[[i]] <- convert_genes(cc_list[[i]], "human", "mouse")}
+names(cc_list) <- c(names(seurat), names(macosko))
+
+cc_df <- cc_list %>% list_to_df()
+names(cc_df)
+write.table(cc_df, "inst/extdata/cellcycle_mouse_genes.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+```

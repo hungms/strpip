@@ -49,7 +49,7 @@ list_to_df <- function(list) {
 df_to_list <- function(df) {
     # Validate input
     stopifnot("Input must be a data frame" = is.data.frame(df))
-    list <- lapply(df, function(x) x[!is.na(x)])
+    list <- lapply(df, function(x) x[!is.na(x) & x != "" & x != "NA"])
     return(list)}
 
 #' Read GMT File

@@ -193,7 +193,7 @@ mouse.omnipath.db <- mouse.omnipath.db %>%
         category = paste0(unique(category), collapse = ", "),
         parent = paste0(unique(parent), collapse = ", "),
         consensus_score = max(consensus_score, na.rm = TRUE),
-        is_cs = ifelse(str_detect(parent, "transmembrane|cell_surface|adhesion|junction"), TRUE, FALSE),
+        is_cs = ifelse(str_detect(parent, "cell_surface"), TRUE, FALSE),
         database_cs = paste0(unique(database_cs), collapse = ", ")
         ) %>%
     dplyr::select(mouse_gene_symbol, mouse_chromosome, human_gene_symbol, human_chromosome, human_gene_symbol_unique, human_chromosome_unique, entity_type, category, parent, consensus_score, is_cs, database_cs) %>%

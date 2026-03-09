@@ -69,17 +69,21 @@ df_to_list <- function(df) {
 #' }
 #' @export
 read_gmt <- function(gmt) {
-  stopifnot(file.exists(gmt))
-  lines <- readLines(gmt)
-  split_lines <- strsplit(lines, "\t")
-  max_cols <- max(sapply(split_lines, length))
-  padded <- lapply(split_lines, function(x) { length(x) <- max_cols; x })
-  df <- data.frame(do.call(rbind, padded), stringsAsFactors = FALSE) %>% t()
-  colnames(df) <- df[1,]
-  df <- df[-c(1,2),]
-  rownames(df) <- NULL
-  df <- as.data.frame(df)
-  return(df)
+    stopifnot(file.exists(gmt))
+    lines <- readLines(gmt)
+    split_lines <- strsplit(lines, "\t")
+    max_cols <- max(sapply(split_lines, length))
+    padded <- lapply(split_lines, function(x) {
+        length(x) <- max_cols
+        x
+    })
+    mat <- do.call(rbind, padded)
+    gene_names <- mat[, 1]
+    mat_genes <- mat[, -c(1, 2), drop = FALSE]
+    df <- as.data.frame(t(mat_genes), stringsAsFactors = FALSE)
+    colnames(df) <- gene_names
+    rownames(df) <- NULL
+    return(df)
 }
 
 #' Read GCT File
